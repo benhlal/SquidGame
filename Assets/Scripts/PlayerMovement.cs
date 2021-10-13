@@ -23,7 +23,16 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        rb.velocity = Vector3.forward * verticalDirection * movementSpeed * Time.fixedDeltaTime;
+        rb.velocity =
+            Vector3.forward *
+            verticalDirection *
+            movementSpeed *
+            Time.fixedDeltaTime;
+    }
+
+    public bool IsMoving()
+    {
+        return rb.velocity.magnitude > 0.1f;
     }
 
     void Update()
