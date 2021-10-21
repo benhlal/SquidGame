@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+using System.Linq;
 
 enum RobotStates
 {
@@ -10,14 +12,11 @@ enum RobotStates
 
 public class DollMovement : MonoBehaviour
 {
-    [SerializeField]
-    private AudioSource konima;
+    [SerializeField] private AudioSource konima;
 
-    [SerializeField]
-    private AudioSource inspectionSound;
+    [SerializeField] private AudioSource inspectionSound;
 
-    [SerializeField]
-    private float startInspectionTime = 2f;
+    [SerializeField] private float startInspectionTime = 2f;
 
     private Animator animator;
 
@@ -27,8 +26,19 @@ public class DollMovement : MonoBehaviour
 
     private float currentInspectionTime = 2f;
 
+    public delegate void OnStartCountingDelegate();
+
+    public OnStartCountingDelegate OnStartCounting;
+
+    public delegate void OnStopCountingDelegate();
+
+    public OnStopCountingDelegate OnStopCounting;
+
+    private List<CharacterMovement> characters = new List<CharacterMovement>();
+
     void Start()
     {
+        characters = FindObjectsOfType<CharacterMovement>().ToList();
         player = FindObjectOfType<PlayerMovement>();
         animator = GetComponentInChildren<Animator>();
         currentInspectionTime = startInspectionTime;
@@ -36,10 +46,10 @@ public class DollMovement : MonoBehaviour
 
     void Update()
     {
-        if (player != null)
-        {
-            StateMachine();
-        }
+        if (characters == null) return;
+        if (characters.Count <= 0) return;
+
+        StateMachine();
     }
 
     private void StateMachine()
@@ -61,10 +71,10 @@ public class DollMovement : MonoBehaviour
     {
         if (!konima.isPlaying)
         {
-           
-
             animator.SetTrigger("inspect");
             currentState = RobotStates.Inspecting;
+            Console.WriteLine("ffff");
+            OnStopCounting?.Invoke();
         }
     }
 
@@ -73,9 +83,23 @@ public class DollMovement : MonoBehaviour
         if (currentInspectionTime > 0)
         {
             currentInspectionTime -= Time.deltaTime;
-            if (player.IsMoving())
+            var charsToDestroy = new List<CharacterMovement>();
+            foreach (var character in characters)
             {
-                Destroy(player.gameObject);
+                if (character.IsMoving())
+                {
+                    charsToDestroy.Add(character);
+                }
+            }
+
+
+            foreach (var character in charsToDestroy)
+            {
+                if (character.IsMoving())
+                {
+                    characters.Remove(character);
+                    Destroy(character.gameObject);
+                }
             }
         }
         else
@@ -85,6 +109,7 @@ public class DollMovement : MonoBehaviour
 
             konima.Play();
             currentState = RobotStates.Counting;
+            OnStartCounting?.Invoke();
         }
     }
 }
