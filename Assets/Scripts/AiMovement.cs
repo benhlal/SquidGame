@@ -1,6 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class AiMovement : CharacterMovement
 {
@@ -17,7 +19,6 @@ public class AiMovement : CharacterMovement
         doll.OnStartCounting += OnStartCounting;
         doll.OnStopCounting += OnStopCounting;
         currentStoppingTime = Random.Range(3, 6);
-
     }
 
     // Update is called once per frame
@@ -36,13 +37,49 @@ public class AiMovement : CharacterMovement
 
     private void OnStartCounting()
     {
-        verticalDirection = 1;
+        if (isAlive == true)
+        {
+            verticalDirection = 1;
+        }
+        else
+        {
+            rb.velocity = Vector3.zero;
+        }
+
         currentTime = 0;
         shouldBeCounting = true;
         currentStoppingTime = Random.Range(3, 6);
+
+        Debug.Log("======> Methode: [OnStartCounting] Comment: [ Triggered by doll]  IS ALIVE  : [" + isAlive + "] " +
+                  " Object Type  :[ " + rb.gameObject.name + "]  Velocity: [" + rb.velocity + "]");
     }
 
     private void OnStopCounting()
     {
+        Debug.Log("======> Methode: [OnStopCounting] Comment: [ Triggered by doll]  IS ALIVE  : [" + isAlive + "] " +
+                  " Object Type  :[ " + rb.gameObject.name + "]  Velocity: [" + rb.velocity + "]");
+    }
+
+    public override void Die()
+    {
+        base.Die();
+
+        Debug.Log("======> Methode: [DieAI] Comment: [ Start DIe]  IS ALIVE  : [" + isAlive + "] " +
+                  "***  Object Type  :[ " + rb.gameObject.name + "]  Velocity: [" + rb.velocity + "]");
+
+        animator.SetTrigger("Death");
+        isAlive = false;
+
+
+        Task t = Task.Run( () => { Destroy(rb.gameObject);
+           
+            Task.Delay(5000).Wait();
+            Console.WriteLine("Task ended delay...");
+        });
+            Debug.Log("======> Methode: [DieAI] Comment: [ Dead ]  IS ALIVE  : [" + isAlive + "] " +
+                      "***  Object Type  :[ " + rb.gameObject.name + "]  Velocity: [" + rb.velocity + "]");
+      
+
+        
     }
 }

@@ -1,8 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 enum RobotStates
 {
@@ -12,9 +11,9 @@ enum RobotStates
 
 public class DollMovement : MonoBehaviour
 {
-    [SerializeField] private AudioSource konima;
-
-    [SerializeField] private AudioSource inspectionSound;
+    [SerializeField] public AudioClip audio1;
+    [SerializeField] public AudioClip audio2;
+    [SerializeField] public AudioSource audios;
 
     [SerializeField] private float startInspectionTime = 2f;
 
@@ -36,12 +35,14 @@ public class DollMovement : MonoBehaviour
 
     private List<CharacterMovement> characters = new List<CharacterMovement>();
 
+
     void Start()
     {
         characters = FindObjectsOfType<CharacterMovement>().ToList();
         player = FindObjectOfType<PlayerMovement>();
         animator = GetComponentInChildren<Animator>();
         currentInspectionTime = startInspectionTime;
+        audios = GetComponent<AudioSource>();
     }
 
     void Update()
@@ -69,7 +70,7 @@ public class DollMovement : MonoBehaviour
 
     private void Count()
     {
-        if (!konima.isPlaying)
+        if (!audios.isPlaying)
         {
             animator.SetTrigger("inspect");
             currentState = RobotStates.Inspecting;
@@ -80,6 +81,10 @@ public class DollMovement : MonoBehaviour
 
     private void Inspect()
     {
+       // audios.clip = audio2;
+       // audios.PlayOneShot(audio2);
+        Debug.Log("======> Methode: [Inspect] Comment: [Doll Inspecting moving players]  Characters:[ " + characters +
+                  "]  Count : [" + characters.Count + "]");
         if (currentInspectionTime > 0)
         {
             currentInspectionTime -= Time.deltaTime;
@@ -92,13 +97,21 @@ public class DollMovement : MonoBehaviour
                 }
             }
 
-
             foreach (var character in charsToDestroy)
             {
-                if (character.IsMoving())
+                if (character.IsMoving() && !character.isImmortal)
                 {
+                    Debug.Log("======> Methode: [Inspect] Comment: [Characters to Kill]  charsToDestroy:[ " +
+                              charsToDestroy + "]  Count : [" + charsToDestroy.Count + "]");
+
+
                     characters.Remove(character);
-                    Destroy(character.gameObject);
+                    Debug.Log("======> Methode: [Inspect] Comment: [Survivors]  characters:[ " + characters +
+                              "]  Count : [" + characters.Count + "]");
+
+
+                    Debug.Log("Calling Die with this character : " + character.name);
+                    character.Die();
                 }
             }
         }
@@ -106,8 +119,8 @@ public class DollMovement : MonoBehaviour
         {
             currentInspectionTime = startInspectionTime;
             animator.SetTrigger("inspect");
-
-            konima.Play();
+            audios.clip = audio1;
+            audios.Play();
             currentState = RobotStates.Counting;
             OnStartCounting?.Invoke();
         }
