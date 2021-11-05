@@ -74,7 +74,6 @@ public class DollMovement : MonoBehaviour
         {
             animator.SetTrigger("inspect");
             currentState = RobotStates.Inspecting;
-            Console.WriteLine("ffff");
             OnStopCounting?.Invoke();
         }
     }
@@ -99,7 +98,7 @@ public class DollMovement : MonoBehaviour
 
             foreach (var character in charsToDestroy)
             {
-                if (character.IsMoving() && !character.isImmortal)
+                if (character.IsMoving() )
                 {
                     Debug.Log("======> Methode: [Inspect] Comment: [Characters to Kill]  charsToDestroy:[ " +
                               charsToDestroy + "]  Count : [" + charsToDestroy.Count + "]");
@@ -110,7 +109,7 @@ public class DollMovement : MonoBehaviour
                               "]  Count : [" + characters.Count + "]");
 
 
-                    Debug.Log("Calling Die with this character : " + character.name);
+                    Debug.Log("Calling Die with this character : " + character.name );
                     character.Die();
                 }
             }

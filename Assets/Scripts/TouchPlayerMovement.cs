@@ -1,65 +1,73 @@
-using System;
+/*using System;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TouchPlayerMovement : MonoBehaviour
+public class TouchPlayerMovement : CharacterMovement
 {
-    public float speed = 40f;
-    private PlayerControls playerInput;
-    public Joystick joystick;
-    private float horizontalMove = 0f;
-    private Rigidbody rb;
+    public float speed = 0.1f;
+  
+    public FixedJoystick moveJoystick;
+    public FixedJoystick lookJoystick;
     private Animator animator;
+    private Rigidbody rb;
 
-    private CharacterController controller;
-    private Vector3 playerVelocity;
-    [SerializeField] private float ps;
-    private bool groundedPlayer;
-    private float playerSpeed = 2.0f;
-    private float jumpHeight = 1.0f;
-    private float gravityValue = -9.81f;
+    float verticalDirection;
 
-    private void Awake()
+
+    
+    void Awake()
     {
-        playerInput = new PlayerControls();
-        controller = GetComponent<CharacterController>();
+        rb = GetComponent<Rigidbody>();
+        animator = GetComponentInChildren<Animator>();
+    }
+    
+    private void Update()
+    {
+        UpdateMoveJoystick();
+        UpdateLookJoystick();
+    }
+    
+    void UpdateMoveJoystick()
+    {
+        float hoz = moveJoystick.Horizontal;
+        float ver = moveJoystick.Vertical;
+        Vector2 convertedXY = ConvertWithCamera(Camera.main.transform.position, hoz, ver);
+        Vector3 direction = new Vector3(convertedXY.x, 0, convertedXY.y).normalized;
+        transform.Translate(direction * 0.1f, Space.World);
     }
 
-    private void OnEnable()
+    void UpdateLookJoystick()
     {
-        playerInput.Enable();
+        float hoz = lookJoystick.Horizontal;
+        float ver = lookJoystick.Vertical;
+        Vector2 convertedXY = ConvertWithCamera(Camera.main.transform.position, hoz, ver);
+        Vector3 direction = new Vector3(convertedXY.x, 0, convertedXY.y).normalized;
+        Vector3 lookAtPosition = transform.position + direction;
+        transform.LookAt(lookAtPosition);
     }
 
-    private void OnDisable()
+
+    private Vector2 ConvertWithCamera(Vector3 cameraPos, float hor, float ver)
     {
-        playerInput.Disable();
+        Vector2 joyDirection = new Vector2(hor, ver).normalized;
+        Vector2 camera2DPos = new Vector2(cameraPos.x, cameraPos.z);
+        Vector2 playerPos = new Vector2(transform.position.x, transform.position.z);
+        Vector2 cameraToPlayerDirection = (Vector2.zero - camera2DPos).normalized;
+        float angle = Vector2.SignedAngle(cameraToPlayerDirection, new Vector2(0, 1));
+        Vector2 finalDirection = RotateVector(joyDirection, -angle);
+        return finalDirection;
     }
 
-
-    void Update()
+    public Vector2 RotateVector(Vector2 v, float angle)
     {
-        groundedPlayer = controller.isGrounded;
-        if (groundedPlayer && playerVelocity.y < 0)
-        {
-            playerVelocity.y = 0f;
-        }
-
-        Vector2 movementInput = playerInput.Player.Move.ReadValue<Vector2>();
-        Vector3 move = new Vector3(movementInput.x, 0f, movementInput.y);
-        controller.Move(move * Time.deltaTime * playerSpeed);
-
-        if (move != Vector3.zero)
-        {
-            gameObject.transform.forward = move;
-        }
-
-       
-
-        playerVelocity.y += gravityValue * Time.deltaTime;
-        controller.Move(playerVelocity * Time.deltaTime);
+        float radian = angle * Mathf.Deg2Rad;
+        float _x = v.x * Mathf.Cos(radian) - v.y * Mathf.Sin(radian);
+        float _y = v.x * Mathf.Sin(radian) + v.y * Mathf.Cos(radian);
+        return new Vector2(_x, _y);
     }
+
 
     /*public override void Die()
     {
@@ -77,5 +85,5 @@ public class TouchPlayerMovement : MonoBehaviour
         UIManager.Instance.TriggerWinMenu();
 
         Debug.Log("WINS NEXT GAME");
-    }*/
-}
+    }#1#
+}*/

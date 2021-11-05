@@ -1,24 +1,36 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using Vector2 = System.Numerics.Vector2;
 
 public class PlayerMovement : CharacterMovement
 {
     public float jumpAmount = 10;
 
+    private Vector2 moveVector;
+
     void Update()
     {
         verticalDirection = Input.GetAxis("Vertical");
-        verticalDirection = Mathf.Clamp(verticalDirection, 0, 1);
+        horizontalDirection = Input.GetAxis("Horizontal");
+        verticalDirection = Mathf.Clamp(verticalDirection, -1, 1);
+        horizontalDirection = Mathf.Clamp(horizontalDirection, -1, 1);
+
+        Vector3 movementDirection = new Vector3(horizontalDirection, 0, verticalDirection);
+
         animator.SetFloat("Speed", verticalDirection);
-        /*if (Input.GetKeyDown(KeyCode.Space))
+
+        if (Input.GetKeyDown(KeyCode.UpArrow))
         {
-            Debug.Log("JUMP PRESS SPACE");
+            rb.velocity = Vector3.forward * verticalDirection * movementSpeed * Time.fixedDeltaTime;
+        }
 
-            rb.AddForce(Vector2.up * jumpAmount, ForceMode.Impulse);
-        }*/
+        if (Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            Debug.Log("RightArrow");
+            transform.Translate(Vector3.right * Time.deltaTime * movementSpeed * horizontalDirection,
+                Space.Self); //LEFT
+            animator.SetFloat("Speed", horizontalDirection);
+        }
     }
-
 
     public override void Die()
     {
@@ -30,7 +42,7 @@ public class PlayerMovement : CharacterMovement
     public override void Win()
     {
         base.Win();
-        
+
         animator.SetTrigger("isWinner");
 
         UIManager.Instance.TriggerWinMenu();
