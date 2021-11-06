@@ -1,8 +1,4 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 public class AiMovement : CharacterMovement
 {
@@ -37,7 +33,7 @@ public class AiMovement : CharacterMovement
 
     private void OnStartCounting()
     {
-        if (isAlive == true)
+        if (isAlive)
         {
             verticalDirection = 1;
         }
@@ -71,15 +67,7 @@ public class AiMovement : CharacterMovement
         isAlive = false;
 
 
-        Task t = Task.Run( () => { Destroy(rb.gameObject);
-           
-            Task.Delay(5000).Wait();
-            Console.WriteLine("Task ended delay...");
-        });
-            Debug.Log("======> Methode: [DieAI] Comment: [ Dead ]  IS ALIVE  : [" + isAlive + "] " +
-                      "***  Object Type  :[ " + rb.gameObject.name + "]  Velocity: [" + rb.velocity + "]");
-      
-
-        
+        Debug.Log("======> Methode: [DieAI] Comment: [ Dead ]  IS ALIVE  : [" + isAlive + "] " +
+                  "***  Object Type  :[ " + rb.gameObject.name + "]  Velocity: [" + rb.velocity + "]");
     }
 }

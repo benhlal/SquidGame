@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -6,7 +5,8 @@ using UnityEngine;
 enum RobotStates
 {
     Counting,
-    Inspecting
+    Inspecting,
+    StandBy
 }
 
 public class DollMovement : MonoBehaviour
@@ -63,9 +63,18 @@ public class DollMovement : MonoBehaviour
             case RobotStates.Inspecting:
                 Inspect();
                 break;
+
+            case RobotStates.StandBy:
+                StandBy();
+                break;
             default:
                 break;
         }
+    }
+
+    private void StandBy()
+    {
+        //  animator.SetTrigger("DanceForSurvivors");
     }
 
     private void Count()
@@ -80,8 +89,8 @@ public class DollMovement : MonoBehaviour
 
     private void Inspect()
     {
-       // audios.clip = audio2;
-       // audios.PlayOneShot(audio2);
+        // audios.clip = audio2;
+        // audios.PlayOneShot(audio2);
         Debug.Log("======> Methode: [Inspect] Comment: [Doll Inspecting moving players]  Characters:[ " + characters +
                   "]  Count : [" + characters.Count + "]");
         if (currentInspectionTime > 0)
@@ -98,7 +107,7 @@ public class DollMovement : MonoBehaviour
 
             foreach (var character in charsToDestroy)
             {
-                if (character.IsMoving() )
+                if (character.IsMoving() && !character.isImmortal)
                 {
                     Debug.Log("======> Methode: [Inspect] Comment: [Characters to Kill]  charsToDestroy:[ " +
                               charsToDestroy + "]  Count : [" + charsToDestroy.Count + "]");
@@ -109,10 +118,22 @@ public class DollMovement : MonoBehaviour
                               "]  Count : [" + characters.Count + "]");
 
 
-                    Debug.Log("Calling Die with this character : " + character.name );
+                    Debug.Log("Calling Die with this character : " + character.name);
                     character.Die();
                 }
             }
+
+
+            /*
+            var leftPlayers = characters.Where(character => (!character.isImmortal && !character.canMove)).ToList();
+
+            if (leftPlayers.Count == 0)
+            {
+                
+                currentState = RobotStates.StandBy;
+              
+
+            }  */
         }
         else
         {

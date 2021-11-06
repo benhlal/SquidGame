@@ -1,6 +1,6 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class FinishLine : MonoBehaviour
@@ -10,7 +10,18 @@ public class FinishLine : MonoBehaviour
         CharacterMovement character = other.GetComponent<CharacterMovement>();
         if (character != null)
         {
-            character.Win();
+           
+            
+            StartCoroutine(ResetCanTP(1f));
+            IEnumerator  ResetCanTP (float delay)
+            {
+                yield return new WaitForSeconds(delay);
+                character.Win();
+      
+            }
+            
         }
     }
+    
+    
 }

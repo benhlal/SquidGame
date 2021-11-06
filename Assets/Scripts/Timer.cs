@@ -1,8 +1,7 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using System.Linq;
 using TMPro;
+using UnityEngine;
 
 public class Timer : MonoBehaviour
 {
@@ -15,24 +14,33 @@ public class Timer : MonoBehaviour
     void Start()
     {
         currentTime = initialTime;
-     
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        var aliveChars = FindObjectsOfType<CharacterMovement>();
+        var playersAliveNotWinnersYet = aliveChars.Where(l => (!l.isImmortal)).ToList();
         if (currentTime > 0)
         {
             currentTime -= Time.deltaTime;
 
             TimeSpan span = TimeSpan.FromSeconds(currentTime);
-           timerText.text = span.ToString(@"mm\:ss");
+            timerText.text = span.ToString(@"mm\:ss");
 
             return;
         }
 
-        // TODO: Kill all players that have not crossed the finish line
-        Debug.Log("Kill all players!");
+        /*else
+        {
+            var aliveChars = FindObjectsOfType<CharacterMovement>();
+            var charsToEliminate = aliveChars.Where(l => (!l.isImmortal)).ToList();
+            foreach (var character in charsToEliminate)
+            {
+                if (!character.isImmortal)
+                {
+                    character.Die();
+                }
+            }*/
     }
 }

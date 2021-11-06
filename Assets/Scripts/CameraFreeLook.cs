@@ -1,8 +1,5 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using Cinemachine;
+using UnityEngine;
 
 [RequireComponent(typeof(CinemachineFreeLook))]
 public class CameraFreeLook : MonoBehaviour
@@ -23,8 +20,8 @@ public class CameraFreeLook : MonoBehaviour
     void Update()
     {
         Vector2 delta = playerCTL.Player.Look.ReadValue<Vector2>();
-        cinemachinefl.m_XAxis.Value += delta.x *200* lookSpeed * Time.deltaTime;
-        cinemachinefl.m_YAxis.Value += delta.y * lookSpeed * Time.deltaTime;
+        cinemachinefl.m_XAxis.Value += delta.x * 200 * lookSpeed * Time.deltaTime;
+        cinemachinefl.m_YAxis.Value += delta.y * Time.deltaTime;
     }
 
     private void OnEnable()

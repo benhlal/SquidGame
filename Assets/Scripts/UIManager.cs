@@ -1,12 +1,9 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class UIManager : MonoBehaviour
 {
     [SerializeField] private GameObject loseMenu;
-    [SerializeField] private GameObject WinMenu;
+    [SerializeField] private GameObject winMenu;
 
 
     public static UIManager Instance { get; private set; }
@@ -17,5 +14,5 @@ public class UIManager : MonoBehaviour
     }
 
     public void TriggerLoseMenu() => loseMenu.SetActive(true);
-    public void TriggerWinMenu() => WinMenu.SetActive(true);
+    public void TriggerWinMenu() => winMenu.SetActive(true);
 }
