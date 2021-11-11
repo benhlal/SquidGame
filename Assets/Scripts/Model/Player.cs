@@ -1,5 +1,7 @@
+using Cinemachine;
 using GamePlayManager;
 using Photon.Pun;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 
 namespace Model
@@ -10,11 +12,13 @@ namespace Model
     {
         private PlayerControls playerControls;
         private CharacterController controller;
-        [SerializeField] private Vector3 playerVelocity;
+        [SerializeField] public Vector3 playerVelocity;
         [SerializeField] private bool groundedPlayer;
         [SerializeField] private float playerSpeed = 3f;
         [SerializeField] private float jumpHeight = 0.57f;
         [SerializeField] private float gravityValue = -9.81f;
+
+        protected CinemachineFreeLook freeLookCamera;
 
         private Transform cameraMain;
         private Vector3 move;
@@ -36,10 +40,7 @@ namespace Model
         {
             Animator = GetComponent<Animator>();
             Rb = GetComponent<Rigidbody>();
-            if (Camera.main != null)
-            {
-                cameraMain = Camera.main.transform;
-            }
+            
 
             photonView = GetComponent<PhotonView>();
         }
