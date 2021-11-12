@@ -1,6 +1,7 @@
 using Cinemachine;
 using GamePlayManager;
 using Photon.Pun;
+using Photon.Pun.Demo.PunBasics;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 
@@ -40,20 +41,28 @@ namespace Model
         {
             Animator = GetComponent<Animator>();
             Rb = GetComponent<Rigidbody>();
-            
+
+            if (Camera.main != null)
+            {
+                cameraMain = Camera.main.transform;
+            }
 
             photonView = GetComponent<PhotonView>();
-        }
 
-        private void OnDisable()
-        {
-            playerControls.Disable();
-        }
+            CameraWork _cameraWork = gameObject.GetComponent<CameraWork>();
 
-        private void OnEnable()
 
-        {
-            playerControls.Enable();
+            if (_cameraWork != null)
+            {
+                if (photonView.IsMine)
+                {
+                    _cameraWork.OnStartFollowing();
+                }
+            }
+            else
+            {
+                Debug.LogError("<Color=Red><a>Missing</a></Color> CameraWork Component on playerPrefab.", this);
+            }
         }
 
 
@@ -76,7 +85,12 @@ namespace Model
             }
 
             movementInput = playerControls.Player.Move.ReadValue<Vector2>();
+            Debug.Log("INPUT MOVEMENT VECTOR  " + movementInput.x + "  y " + movementInput.y);
             move = (cameraMain.forward * movementInput.y + cameraMain.right * movementInput.x);
+            Debug.Log("MOVE  VECTOR  camera params " + "cameraMain  forward " + cameraMain.forward + "  right " +
+                      cameraMain.right);
+            Debug.Log("MOVE  VECTOR  " + move.x + "  y " + move.y + " z " + move.z);
+
             move.y = 0;
 
             if (CanPlay)
@@ -122,6 +136,17 @@ namespace Model
         {
             base.Win();
             UIManager.Instance.TriggerWinMenu();
+        }
+
+        private void OnDisable()
+        {
+            playerControls.Disable();
+        }
+
+        private void OnEnable()
+
+        {
+            playerControls.Enable();
         }
     }
 }
