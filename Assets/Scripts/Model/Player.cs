@@ -1,8 +1,6 @@
-using Cinemachine;
 using GamePlayManager;
 using Photon.Pun;
 using Photon.Pun.Demo.PunBasics;
-using UnityEditor.SceneManagement;
 using UnityEngine;
 
 namespace Model
@@ -15,11 +13,10 @@ namespace Model
         private CharacterController controller;
         [SerializeField] public Vector3 playerVelocity;
         [SerializeField] private bool groundedPlayer;
-        [SerializeField] private float playerSpeed = 3f;
+        [SerializeField] private float playerSpeed = 8f;
         [SerializeField] private float jumpHeight = 0.57f;
         [SerializeField] private float gravityValue = -9.81f;
 
-        protected CinemachineFreeLook freeLookCamera;
 
         private Transform cameraMain;
         private Vector3 move;

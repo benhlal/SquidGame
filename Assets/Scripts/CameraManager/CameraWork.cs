@@ -1,4 +1,16 @@
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="CameraWork.cs" company="Exit Games GmbH">
+//   Part of: Photon Unity Networking Demos
+// </copyright>
+// <summary>
+//  Used in PUN Basics Tutorial to deal with the Camera work to follow the player
+// </summary>
+// <author>developer@exitgames.com</author>
+// --------------------------------------------------------------------------------------------------------------------
+
+
 using UnityEngine;
+
 
 namespace Photon.Pun.Demo.PunBasics
 {
@@ -9,28 +21,30 @@ namespace Photon.Pun.Demo.PunBasics
     {
         #region Private Fields
 
-        [Tooltip("The distance in the local x-z plane to the target")] [SerializeField]
-        private float distance = 6.0f;
 
-
-        [Tooltip("The height we want the camera to be above the target")] [SerializeField]
-        private float height = 3.96f;
-
-
-        [Tooltip(
-            "Allow the camera to be offseted vertically from the target, for example giving more view of the sceneray and less ground.")]
+        [Tooltip("The distance in the local x-z plane to the target")]
         [SerializeField]
-        private Vector3 centerOffset = new Vector3(0, 5, 0);
+        private float distance = 7.0f;
 
 
-        [Tooltip(
-            "Set this as false if a component of a prefab being instanciated by Photon Network, and manually call OnStartFollowing() when and if needed.")]
+        [Tooltip("The height we want the camera to be above the target")]
+        [SerializeField]
+        private float height = 3.0f;
+
+
+        [Tooltip("Allow the camera to be offseted vertically from the target, for example giving more view of the sceneray and less ground.")]
+        [SerializeField]
+        private Vector3 centerOffset = Vector3.zero;
+
+
+        [Tooltip("Set this as false if a component of a prefab being instanciated by Photon Network, and manually call OnStartFollowing() when and if needed.")]
         [SerializeField]
         private bool followOnStart = false;
 
 
-        [Tooltip("The Smoothing for the camera to follow the target")] [SerializeField]
-        private float smoothSpeed = 0.36f;
+        [Tooltip("The Smoothing for the camera to follow the target")]
+        [SerializeField]
+        private float smoothSpeed = 0.125f;
 
 
         // cached transform of the target
@@ -44,10 +58,12 @@ namespace Photon.Pun.Demo.PunBasics
         // Cache for camera offset
         Vector3 cameraOffset = Vector3.zero;
 
+
         #endregion
 
 
         #region MonoBehaviour Callbacks
+
 
         /// <summary>
         /// MonoBehaviour method called on GameObject by Unity during initialization phase
@@ -73,16 +89,17 @@ namespace Photon.Pun.Demo.PunBasics
 
 
             // only follow is explicitly declared
-            if (isFollowing)
-            {
-                Follow();
+            if (isFollowing) {
+                Follow ();
             }
         }
+
 
         #endregion
 
 
         #region Public Methods
+
 
         /// <summary>
         /// Raises the start following event.
@@ -96,10 +113,12 @@ namespace Photon.Pun.Demo.PunBasics
             Cut();
         }
 
+
         #endregion
 
 
         #region Private Methods
+
 
         /// <summary>
         /// Follow the target smoothly
@@ -110,8 +129,7 @@ namespace Photon.Pun.Demo.PunBasics
             cameraOffset.y = height;
 
 
-            cameraTransform.position = Vector3.Lerp(cameraTransform.position,
-                this.transform.position + this.transform.TransformVector(cameraOffset), smoothSpeed * Time.deltaTime);
+            cameraTransform.position = Vector3.Lerp(cameraTransform.position, this.transform.position +this.transform.TransformVector(cameraOffset), smoothSpeed*Time.deltaTime);
 
 
             cameraTransform.LookAt(this.transform.position + centerOffset);
@@ -129,7 +147,6 @@ namespace Photon.Pun.Demo.PunBasics
 
             cameraTransform.LookAt(this.transform.position + centerOffset);
         }
-
         #endregion
     }
 }
