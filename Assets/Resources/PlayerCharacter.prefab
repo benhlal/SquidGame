@@ -1693,7 +1693,7 @@ MonoBehaviour:
   ShotAudioCrouce: {fileID: 0}
   playerVelocity: {x: 0, y: 0, z: 0}
   groundedPlayer: 0
-  playerSpeed: 3
+  playerSpeed: 8
   jumpHeight: 0.57
   gravityValue: -9.81
 --- !u!114 &3890542884930355312
@@ -1865,9 +1865,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4748cebb5dfd32345b96168abc7b57c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  distance: 7
+  distance: 4
   height: 3
-  centerOffset: {x: 0, y: 0, z: 0}
+  centerOffset: {x: 0, y: 3, z: 0}
   followOnStart: 0
   smoothSpeed: 0.125
 --- !u!1 &7241751186011720903

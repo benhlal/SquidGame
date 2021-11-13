@@ -6,7 +6,22 @@ ModelImporter:
   - first:
       74: -203655887218126122
     second: mixamo.com
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: lola_diffuse
+    second: {fileID: 2800000, guid: a8c14d44caee5ad4aa53dd0090f1d8ad, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: lola_normal
+    second: {fileID: 2800000, guid: 4f2216096cc2259469a874407cbcab90, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: lola_specular
+    second: {fileID: 2800000, guid: 26d50d74e01e46d478334d4ddb3472bd, type: 3}
   materials:
     materialImportMode: 2
     materialName: 0
