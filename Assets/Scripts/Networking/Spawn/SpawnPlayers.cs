@@ -1,11 +1,13 @@
 using Photon.Pun;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Networking.Spawn
 {
     public class SpawnPlayers : MonoBehaviour
     {
-        public GameObject playerToClone;
+        public GameObject femalePlayerToClone;
+        public GameObject malePlayerToClone;
         private GameObject playerOnline;
         private Transform playerTransform;
         public float minX;
@@ -13,16 +15,28 @@ namespace Networking.Spawn
         public float minZ;
         public float maxZ;
         public float maxY;
-
+        public static bool isMale;
 
 //*****************************************************************  EVENTS *******************************************************************************
 
         private void Start()
         {
+            
             //   cameraMain = Camera.main.transform;
-
             var randomPosition = new Vector3(Random.Range(minX, maxX), maxY, Random.Range(minZ, maxZ));
-            playerOnline = PhotonNetwork.Instantiate(playerToClone.name, randomPosition, Quaternion.identity, 0);
+
+
+            if (!isMale)
+            {
+                playerOnline =
+                    PhotonNetwork.Instantiate(femalePlayerToClone.name, randomPosition, Quaternion.identity, 0);
+            }
+            else
+            {
+                playerOnline =
+                    PhotonNetwork.Instantiate(malePlayerToClone.name, randomPosition, Quaternion.identity, 0);
+            }
+
             if (playerTransform != null) playerTransform = playerOnline.transform;
             //      cameraMain = cameraMain.transform;
             //player spawn position 

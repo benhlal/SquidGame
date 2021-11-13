@@ -1,6 +1,8 @@
 using System;
+using Networking.Spawn;
 using Photon.Pun;
 using TMPro;
+using UnityEngine.UI;
 
 namespace Networking
 {
@@ -8,7 +10,7 @@ namespace Networking
     {
         public TMP_InputField createInput;
         public TMP_InputField joinInput;
-
+        public Toggle sexe_Toggle;
         private const String GAME_SCENE = "SquidTheGame";
 
 
@@ -25,7 +27,14 @@ namespace Networking
 
         public override void OnJoinedRoom()
         {
+            SpawnPlayers.isMale = sexe_Toggle.isOn;
             PhotonNetwork.LoadLevel(GAME_SCENE);
+        }
+
+
+        void ToggleValueChanged(Toggle change)
+        {
+            change.isOn = false;
         }
     }
 }

@@ -36,7 +36,7 @@ namespace Model
 
         private void Start()
         {
-            Animator = GetComponent<Animator>();
+            Animator = GetComponentInChildren<Animator>();
             Rb = GetComponent<Rigidbody>();
 
             if (Camera.main != null)
