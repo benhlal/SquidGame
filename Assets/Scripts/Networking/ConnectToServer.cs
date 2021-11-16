@@ -7,17 +7,19 @@ namespace Networking
     {
         private const string LOBBY_SCENE = "Lobby";
 
-    
+
         //*****************************************************************  EVENTS *******************************************************************************
-    
-    
+
+
         private void Start()
         {
+            if (PhotonNetwork.IsConnected) PhotonNetwork.Disconnect();
             PhotonNetwork.ConnectUsingSettings();
         }
 
         public override void OnConnectedToMaster()
         {
+            PhotonNetwork.AutomaticallySyncScene = true;
             PhotonNetwork.JoinLobby();
         }
 

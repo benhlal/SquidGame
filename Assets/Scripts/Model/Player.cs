@@ -1,3 +1,4 @@
+using System.Collections;
 using GamePlayManager;
 using Photon.Pun;
 using Photon.Pun.Demo.PunBasics;
@@ -13,9 +14,14 @@ namespace Model
         private CharacterController controller;
         [SerializeField] public Vector3 playerVelocity;
         [SerializeField] private bool groundedPlayer;
-        [SerializeField] private float playerSpeed = 8f;
+        [SerializeField] private float playerSpeed = 7f;
         [SerializeField] private float jumpHeight = 0.57f;
         [SerializeField] private float gravityValue = -9.81f;
+
+        //Effects 
+        [SerializeField] private ParticleSystem bloodSpotFx;
+        [SerializeField] Transform bloodSpotPosition;
+        [SerializeField] float delayValue = 0.2f;
 
 
         private Transform cameraMain;
@@ -24,7 +30,7 @@ namespace Model
         private PhotonView photonView;
         protected Vector2 movementInput;
 
-
+        private string gameobjectName;
         //*****************************************************************  EVENTS *******************************************************************************
 
 
@@ -39,6 +45,9 @@ namespace Model
             Animator = GetComponentInChildren<Animator>();
             Rb = GetComponent<Rigidbody>();
 
+
+            gameobjectName = gameObject.name;
+            IsAlive = true;
             if (Camera.main != null)
             {
                 cameraMain = Camera.main.transform;
@@ -65,7 +74,7 @@ namespace Model
 
         private void Update()
         {
-            // CanPlay = (IsAlive && !IsWinner);
+            CanPlay = (IsAlive && !IsWinner);
             if (!photonView.IsMine) return;
             Run();
             Jump();
@@ -92,11 +101,18 @@ namespace Model
 
             if (CanPlay)
             {
-                controller.Move(move * Time.deltaTime * playerSpeed);
+                var motionVector = move * Time.deltaTime * playerSpeed;
+                controller.Move(motionVector);
                 Animator.SetFloat(SPEED, controller.velocity.magnitude);
+                Debug.Log("Input Speed magnitude " +
+                          controller.velocity.magnitude); // from 0 to 8 defined in  playerSpeed
+                Debug.Log("Player Motion Speed " + motionVector.magnitude);
+                Debug.Log("RB Speed " + Rb.velocity.magnitude);
+                motionSpeed = motionVector.magnitude;
             }
             else
             {
+                Debug.Log("Player : " + gameobjectName);
                 move = Vector3.zero;
             }
 
@@ -114,6 +130,8 @@ namespace Model
                 playerVelocity.y += Mathf.Sqrt(jumpHeight * -3.0f * gravityValue);
                 Animator.SetTrigger(JUMP_ANIMATION);
                 Animator.SetBool(IDLE_ANIMATION, false);
+                AudioSource.clip = JumpClip;
+                AudioSource.PlayOneShot(AudioSource.clip);
             }
 
             playerVelocity.y += gravityValue * Time.deltaTime;
@@ -124,15 +142,37 @@ namespace Model
         public override void Die()
         {
             base.Die();
+
+            IEnumerator BloodEffect(float delay)
+            {
+                yield return new WaitForSeconds(delay);
+                var bloodEffect = Instantiate(bloodSpotFx, bloodSpotPosition.position, bloodSpotFx.transform.rotation);
+                Destroy(bloodEffect, 2f);
+            }
+
+
+            StartCoroutine(BloodEffect(delayValue));
+            StartCoroutine(DeclareWinner(1f));
+
+            IEnumerator DeclareWinner(float delay)
+            {
+                yield return new WaitForSeconds(delay);
+                UIManager.Instance.TriggerLoseMenu();
+            }
+
             Animator.ResetTrigger(JUMP_ANIMATION);
             canJump = false;
-            UIManager.Instance.TriggerLoseMenu();
         }
 
         public override void Win()
         {
             base.Win();
-            UIManager.Instance.TriggerWinMenu();
+
+            IEnumerator DeclareWinner(float delay)
+            {
+                yield return new WaitForSeconds(delay);
+                UIManager.Instance.TriggerWinMenu();
+            }
         }
 
         private void OnDisable()

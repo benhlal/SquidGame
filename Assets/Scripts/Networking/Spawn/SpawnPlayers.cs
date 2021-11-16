@@ -10,19 +10,22 @@ namespace Networking.Spawn
         public GameObject malePlayerToClone;
         private GameObject playerOnline;
         private Transform playerTransform;
-        public float minX;
-        public float maxX;
-        public float minZ;
-        public float maxZ;
-        public float maxY;
+        [SerializeField] public float minX;
+        [SerializeField] public float maxX;
+        [SerializeField] public float minZ;
+        [SerializeField] public float maxZ;
+        [SerializeField] public float maxY;
         public static bool isMale;
 
 //*****************************************************************  EVENTS *******************************************************************************
 
         private void Start()
         {
-            
-            //   cameraMain = Camera.main.transform;
+            CreatePlayer();
+        }
+
+        private void CreatePlayer()
+        {
             var randomPosition = new Vector3(Random.Range(minX, maxX), maxY, Random.Range(minZ, maxZ));
 
 
@@ -38,10 +41,6 @@ namespace Networking.Spawn
             }
 
             if (playerTransform != null) playerTransform = playerOnline.transform;
-            //      cameraMain = cameraMain.transform;
-            //player spawn position 
-            //    cameraMain.position = playerTransform.position - playerTransform.forward * 10 + playerTransform.up * 3;
-            // cameraMain.LookAt(playerTransform.position);
         }
     }
 }

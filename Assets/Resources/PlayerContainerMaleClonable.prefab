@@ -908,6 +908,7 @@ GameObject:
   - component: {fileID: 6679008292265984401}
   - component: {fileID: 1106297674728022785}
   - component: {fileID: 1342107664865214492}
+  - component: {fileID: 1141911801705950381}
   m_Layer: 0
   m_Name: PlayerContainerMaleClonable
   m_TagString: Player
@@ -927,6 +928,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 5076640239339803522}
+  - {fileID: 5481482158171409033}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -972,11 +974,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4748cebb5dfd32345b96168abc7b57c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  distance: 7
-  height: 3
-  centerOffset: {x: 0, y: 0, z: 0}
+  distance: 5.9
+  height: 2.14
+  centerOffset: {x: 0, y: 1.9, z: 0}
   followOnStart: 0
-  smoothSpeed: 0.125
+  smoothSpeed: 0.36
 --- !u!114 &4065851851946204166
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -990,12 +992,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movementSpeed: 100
-  ShotAudioCrouce: {fileID: 0}
+  AudioSource: {fileID: 1141911801705950381}
+  JumpClip: {fileID: 8300000, guid: 79a5ec85e6ed2994d844f43ea870f183, type: 3}
+  ShotClip: {fileID: 8300000, guid: 2ae3362fecf3b3f4c90d97ae8538c33c, type: 3}
+  SprintClip: {fileID: 0}
   playerVelocity: {x: 0, y: 0, z: 0}
   groundedPlayer: 0
-  playerSpeed: 8
-  jumpHeight: 0.57
+  playerSpeed: 6
+  jumpHeight: 0.63
   gravityValue: -9.81
+  bloodSpotFx: {fileID: 364606860825231915, guid: 69764eaac58c1f3429d789dd88781b78, type: 3}
+  bloodSpotPosition: {fileID: 5481482158171409033}
+  delayValue: 0.2
 --- !u!143 &4361510089471345444
 CharacterController:
   m_ObjectHideFlags: 0
@@ -1101,6 +1109,102 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0af312ec4f3d0f3449fbeacfcdfd94cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!82 &1141911801705950381
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2448491947179888673}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 0.569
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &2907589817907396573
 GameObject:
   m_ObjectHideFlags: 0
@@ -2029,6 +2133,36 @@ Transform:
   m_Children: []
   m_Father: {fileID: 5432681481834973037}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &6131627657820921066
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5481482158171409033}
+  m_Layer: 0
+  m_Name: BloodSpot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5481482158171409033
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6131627657820921066}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.675, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4835856489667607583}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6172047593200005804
 GameObject:

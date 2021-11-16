@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 namespace Model
@@ -20,40 +21,38 @@ namespace Model
         protected string PlayerStatus;
 
         // Flags
-        protected bool CanPlay = true;
-        protected bool IsAlive = true;
+        public bool CanPlay { get; set; }
+        public bool IsAlive { get; set; }
 
-        public bool IsWinner { get;  private set; }
+        public bool IsWinner { get; set; }
 
         protected float VerticalDirection = 1;
         [SerializeField] protected float movementSpeed = 100f;
-        [SerializeField] private AudioSource ShotAudioCrouce;
+        [SerializeField] protected AudioSource AudioSource;
+        [SerializeField] protected AudioClip JumpClip;
+        [SerializeField] protected AudioClip ShotClip;
+        [SerializeField] protected AudioClip SprintClip;
 
+        protected float motionSpeed;
 
         private Vector3 characterMovementVelocityVec;
+
 //*****************************************************************  EVENTS *******************************************************************************
         private void Awake()
         {
             Rb = GetComponent<Rigidbody>();
             Animator = GetComponentInChildren<Animator>();
-            ShotAudioCrouce = GetComponent<AudioSource>();
+            AudioSource = GetComponent<AudioSource>();
+            CanPlay = true;
+            IsAlive = true;
         }
 
-        public bool IsMoving()
-        {
-            //this caller character
-            bool isMoving = Rb.velocity.magnitude > 5f;
-            Debug.Log("==========>   IS MOVING CHECK :" + isMoving + "  IS ALIVE  : " + IsAlive + " ***  TYPE : " +
-                      Rb.gameObject.name);
-
-            return isMoving;
-        }
 
         private void FixedUpdate()
         {
-            //CanPlay = (IsAlive && !IsWinner);
+            CanPlay = (IsAlive && !IsWinner);
 
-            if (IsAlive)
+            if (CanPlay)
             {
                 //Setting up movement vector
                 Rb.velocity = Vector3.forward * VerticalDirection * movementSpeed * Time.fixedDeltaTime;
@@ -78,11 +77,18 @@ namespace Model
         {
             Debug.Log("======> Methode: [Die] Comment: [ Start DIe]  IS ALIVE  : [" + IsAlive + "] " +
                       "***  Object Type  :[ " + Rb.gameObject.name + "]  Velocity: [" + Rb.velocity + "]");
+            AudioSource.clip = ShotClip;
+            AudioSource.PlayOneShot(AudioSource.clip);
 
-            ShotAudioCrouce.PlayOneShot(ShotAudioCrouce.clip);
+            IEnumerator TriggerDeathAnim(float delay)
+            {
+                yield return new WaitForSeconds(delay);
+                Animator.SetTrigger(DEATH_ANIMATION);
+                IsAlive = false;
+            }
 
-            Animator.SetTrigger(DEATH_ANIMATION);
-            IsAlive = false;
+            StartCoroutine(TriggerDeathAnim(0.3f));
+
 
             Debug.Log("======> Methode: [Die] Comment: [ Dead ]  IS ALIVE  : [" + IsAlive + "] " +
                       "***  Object Type  :[ " + Rb.gameObject.name + "]  Velocity: [" + Rb.velocity + "]");
@@ -96,6 +102,31 @@ namespace Model
 
             Debug.Log("======> Methode: [WIN VIRTUAL] Comment: IS ALIVE  : [" + IsAlive + "] " +
                       "***  Object Type  :[ " + Rb.gameObject.name + "]  Velocity: [" + Rb.velocity + "]");
+        }
+
+        public bool IsMoving()
+        {
+            var speedMagnitude = float.Parse(Rb.velocity.magnitude.ToString("N0"));
+
+
+            Debug.Log("SpeedMagnitude Decimal" + speedMagnitude);
+            Debug.Log(" METHODE : IsMoving " + "  Object  " + Rb.gameObject.name + " Velocity " +
+                      Rb.velocity.magnitude);
+
+            //this caller character
+            bool isMoving = Rb.velocity.magnitude > 3f;
+            if (isMoving)
+            {
+                Debug.Log("Player " + Rb.gameObject.name + "CAUGHT MOVING at SPEED : " + speedMagnitude +
+                          " Velocity: " + Rb.velocity.magnitude);
+                Debug.Log(" METHODE : IsMoving " + isMoving + "  Object  " + Rb.gameObject.name + " Velocity " +
+                          Rb.velocity.magnitude);
+            }
+
+            Debug.Log(" IS MOVING CHECK :" + isMoving + "  IS ALIVE  : " + IsAlive + " ***  TYPE : " +
+                      Rb.gameObject.name);
+
+            return isMoving;
         }
     }
 }

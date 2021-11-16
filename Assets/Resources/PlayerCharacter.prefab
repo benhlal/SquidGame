@@ -920,6 +920,36 @@ Transform:
   m_Father: {fileID: 8312335035957684847}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &4182936857632046645
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2863279959153852518}
+  m_Layer: 0
+  m_Name: BloodSpot (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2863279959153852518
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4182936857632046645}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.855, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 8019957719613678707}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4235277286165742025
 GameObject:
   m_ObjectHideFlags: 0
@@ -1548,6 +1578,8 @@ Transform:
   m_Children:
   - {fileID: 8013166667130594170}
   - {fileID: 2687183245586656590}
+  - {fileID: 3100694551686722924}
+  - {fileID: 2863279959153852518}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1600,6 +1632,8 @@ MonoBehaviour:
   playerSpeed: 8
   jumpHeight: 0.57
   gravityValue: -9.81
+  bloodSpotFx: {fileID: 8805681921062758800, guid: 4993355647fd3e64d996bb7954f0dc1f, type: 3}
+  bloodSpotPosition: {fileID: 3100694551686722924}
 --- !u!143 &4265359251166286230
 CharacterController:
   m_ObjectHideFlags: 0
@@ -2525,3 +2559,65 @@ Transform:
   m_Father: {fileID: 7221746815723710711}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &2821652802073060233
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 8019957719613678707}
+    m_Modifications:
+    - target: {fileID: 878033711407978213, guid: 33e15d1445ded4d4daab64a5d966c6b5, type: 3}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 878033711407978213, guid: 33e15d1445ded4d4daab64a5d966c6b5, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 878033711407978213, guid: 33e15d1445ded4d4daab64a5d966c6b5, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.855
+      objectReference: {fileID: 0}
+    - target: {fileID: 878033711407978213, guid: 33e15d1445ded4d4daab64a5d966c6b5, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 878033711407978213, guid: 33e15d1445ded4d4daab64a5d966c6b5, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 878033711407978213, guid: 33e15d1445ded4d4daab64a5d966c6b5, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 878033711407978213, guid: 33e15d1445ded4d4daab64a5d966c6b5, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 878033711407978213, guid: 33e15d1445ded4d4daab64a5d966c6b5, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 878033711407978213, guid: 33e15d1445ded4d4daab64a5d966c6b5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 878033711407978213, guid: 33e15d1445ded4d4daab64a5d966c6b5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 878033711407978213, guid: 33e15d1445ded4d4daab64a5d966c6b5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8806208757955621349, guid: 33e15d1445ded4d4daab64a5d966c6b5, type: 3}
+      propertyPath: m_Name
+      value: BloodSpot
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 33e15d1445ded4d4daab64a5d966c6b5, type: 3}
+--- !u!4 &3100694551686722924 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 878033711407978213, guid: 33e15d1445ded4d4daab64a5d966c6b5, type: 3}
+  m_PrefabInstance: {fileID: 2821652802073060233}
+  m_PrefabAsset: {fileID: 0}

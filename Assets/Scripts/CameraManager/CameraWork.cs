@@ -21,29 +21,27 @@ namespace Photon.Pun.Demo.PunBasics
     {
         #region Private Fields
 
+        [Tooltip("The distance in the local x-z plane to the target")] [SerializeField]
+        private float distance = 4.6f;
 
-        [Tooltip("The distance in the local x-z plane to the target")]
+
+        [Tooltip("The height we want the camera to be above the target")] [SerializeField]
+        private float height = 2.38f;
+
+
+        [Tooltip(
+            "Allow the camera to be offseted vertically from the target, for example giving more view of the sceneray and less ground.")]
         [SerializeField]
-        private float distance = 7.0f;
+        private Vector3 centerOffset = new Vector3(0, 1.57f, 0);
 
 
-        [Tooltip("The height we want the camera to be above the target")]
-        [SerializeField]
-        private float height = 3.0f;
-
-
-        [Tooltip("Allow the camera to be offseted vertically from the target, for example giving more view of the sceneray and less ground.")]
-        [SerializeField]
-        private Vector3 centerOffset = Vector3.zero;
-
-
-        [Tooltip("Set this as false if a component of a prefab being instanciated by Photon Network, and manually call OnStartFollowing() when and if needed.")]
+        [Tooltip(
+            "Set this as false if a component of a prefab being instanciated by Photon Network, and manually call OnStartFollowing() when and if needed.")]
         [SerializeField]
         private bool followOnStart = false;
 
 
-        [Tooltip("The Smoothing for the camera to follow the target")]
-        [SerializeField]
+        [Tooltip("The Smoothing for the camera to follow the target")] [SerializeField]
         private float smoothSpeed = 0.125f;
 
 
@@ -58,12 +56,10 @@ namespace Photon.Pun.Demo.PunBasics
         // Cache for camera offset
         Vector3 cameraOffset = Vector3.zero;
 
-
         #endregion
 
 
         #region MonoBehaviour Callbacks
-
 
         /// <summary>
         /// MonoBehaviour method called on GameObject by Unity during initialization phase
@@ -89,17 +85,16 @@ namespace Photon.Pun.Demo.PunBasics
 
 
             // only follow is explicitly declared
-            if (isFollowing) {
-                Follow ();
+            if (isFollowing)
+            {
+                Follow();
             }
         }
-
 
         #endregion
 
 
         #region Public Methods
-
 
         /// <summary>
         /// Raises the start following event.
@@ -113,12 +108,10 @@ namespace Photon.Pun.Demo.PunBasics
             Cut();
         }
 
-
         #endregion
 
 
         #region Private Methods
-
 
         /// <summary>
         /// Follow the target smoothly
@@ -129,7 +122,8 @@ namespace Photon.Pun.Demo.PunBasics
             cameraOffset.y = height;
 
 
-            cameraTransform.position = Vector3.Lerp(cameraTransform.position, this.transform.position +this.transform.TransformVector(cameraOffset), smoothSpeed*Time.deltaTime);
+            cameraTransform.position = Vector3.Lerp(cameraTransform.position,
+                this.transform.position + this.transform.TransformVector(cameraOffset), smoothSpeed * Time.deltaTime);
 
 
             cameraTransform.LookAt(this.transform.position + centerOffset);
@@ -147,6 +141,7 @@ namespace Photon.Pun.Demo.PunBasics
 
             cameraTransform.LookAt(this.transform.position + centerOffset);
         }
+
         #endregion
     }
 }

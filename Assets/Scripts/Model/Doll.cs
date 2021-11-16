@@ -40,6 +40,7 @@ public class Doll : MonoBehaviour
     void Start()
     {
         characters = FindObjectsOfType<Character>().ToList();
+
         player = FindObjectOfType<Player>();
         animator = GetComponentInChildren<Animator>();
         currentInspectionTime = startInspectionTime;
@@ -48,10 +49,15 @@ public class Doll : MonoBehaviour
 
     void Update()
     {
+        characters = FindObjectsOfType<Character>().ToList();
+
         if (characters == null) return;
         if (characters.Count <= 0) return;
+        var playersAliveNotWinnersYet =
+            characters.Where(character => (character.IsAlive && !character.IsWinner)).ToList();
 
         StateMachine();
+        if (playersAliveNotWinnersYet.Count == 0) currentState = RobotStates.StandBy;
     }
 
     private void StateMachine()
@@ -75,7 +81,7 @@ public class Doll : MonoBehaviour
 
     private void StandBy()
     {
-        //  animator.SetTrigger("DanceForSurvivors");
+          animator.SetTrigger("DanceForSurvivors");
     }
 
     private void Count()
@@ -108,7 +114,7 @@ public class Doll : MonoBehaviour
 
             foreach (var character in charsToDestroy)
             {
-                if (character.IsMoving() )
+                if (character.IsMoving())
                 {
                     Debug.Log("======> Methode: [Inspect] Comment: [Characters to Kill]  charsToDestroy:[ " +
                               charsToDestroy + "]  Count : [" + charsToDestroy.Count + "]");
