@@ -21,6 +21,7 @@ namespace Networking.Spawn
 
         private void Start()
         {
+            Debug.Log("Component [SpawnPlayers] Method [Start]  isMale: " + isMale);
             CreatePlayer();
         }
 
@@ -29,16 +30,23 @@ namespace Networking.Spawn
             var randomPosition = new Vector3(Random.Range(minX, maxX), maxY, Random.Range(minZ, maxZ));
 
 
-            if (!isMale)
+            if (isMale)
             {
+                Debug.Log("Character selected is Male : " + isMale);
                 playerOnline =
-                    PhotonNetwork.Instantiate(femalePlayerToClone.name, randomPosition, Quaternion.identity, 0);
+                    PhotonNetwork.Instantiate(malePlayerToClone.name, randomPosition, Quaternion.identity, 0);
+                Debug.Log("character created : " + malePlayerToClone.name);
             }
             else
             {
+                //default character is female 
+                Debug.Log("Character is default isMale : " + isMale);
+
                 playerOnline =
-                    PhotonNetwork.Instantiate(malePlayerToClone.name, randomPosition, Quaternion.identity, 0);
+                    PhotonNetwork.Instantiate(femalePlayerToClone.name, randomPosition, Quaternion.identity, 0);
+                Debug.Log("character created : " + malePlayerToClone.name);
             }
+
 
             if (playerTransform != null) playerTransform = playerOnline.transform;
         }

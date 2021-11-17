@@ -13,9 +13,9 @@ namespace GamePlayManager.MatchMaking
         private const string GAME_SCENE = "SquidTheGame";
         private const string LOBBY_SCENE = "Lobby";
         private PhotonView localPhotonView;
-        [SerializeField] private int playerCount;
+        private int playerCount;
         private int roomSize;
-        [SerializeField] private int minRoomPlayers;
+        private int minRoomPlayers;
         [SerializeField] private TextMeshProUGUI displayPlayerCount;
         [SerializeField] private TextMeshProUGUI displayTimer;
 
@@ -67,11 +67,11 @@ namespace GamePlayManager.MatchMaking
 
         private void WaitingForMorePlayers()
         {
-            if (playerCount <= 1)
-        {
-            ResetTimer();
-        }
-        
+            /*if (playerCount <= 1)
+            {
+                ResetTimer();
+            }
+            */
 
             if (readyToStart)
             {
@@ -85,9 +85,10 @@ namespace GamePlayManager.MatchMaking
             }
 
             TimeSpan span = TimeSpan.FromSeconds(timerToStartGame);
-            displayTimer.text = span.ToString(@"mm\:ss");
+            displayTimer.text = span.ToString(@"ss");
+            //   displayTimer.text = "Match will start in : " + span.ToString(@"mm\:ss") + "";
             Debug.Log("timerToStartGame :" + timerToStartGame);
-            if (timerToStartGame <= 0)
+            if (timerToStartGame <= 0f)
             {
                 if (startingGame) return;
                 StartGame();

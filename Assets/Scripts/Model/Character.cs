@@ -84,8 +84,8 @@ namespace Model
             {
                 yield return new WaitForSeconds(delay);
                 Animator.SetTrigger(DEATH_ANIMATION);
-                IsAlive = false;
             }
+            IsAlive = false;
 
             StartCoroutine(TriggerDeathAnim(0.3f));
 
@@ -109,12 +109,12 @@ namespace Model
             var speedMagnitude = float.Parse(Rb.velocity.magnitude.ToString("N0"));
 
 
-            Debug.Log("SpeedMagnitude Decimal" + speedMagnitude);
+             Debug.Log("SpeedMagnitude Decimal" + speedMagnitude);
             Debug.Log(" METHODE : IsMoving " + "  Object  " + Rb.gameObject.name + " Velocity " +
                       Rb.velocity.magnitude);
 
             //this caller character
-            bool isMoving = Rb.velocity.magnitude > 3f;
+            bool isMoving = Rb.velocity.magnitude > 2.5f;
             if (isMoving)
             {
                 Debug.Log("Player " + Rb.gameObject.name + "CAUGHT MOVING at SPEED : " + speedMagnitude +

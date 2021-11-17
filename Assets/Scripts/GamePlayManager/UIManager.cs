@@ -6,8 +6,8 @@ namespace GamePlayManager
     {
         [SerializeField] private GameObject loseMenu;
         [SerializeField] private GameObject winMenu;
-        
-        
+
+
 //*****************************************************************  EVENTS *******************************************************************************
 
         public static UIManager Instance { get; private set; }
@@ -18,6 +18,8 @@ namespace GamePlayManager
         }
 
         public void TriggerLoseMenu() => loseMenu.SetActive(true);
+
+
         public void TriggerWinMenu() => winMenu.SetActive(true);
     }
 }

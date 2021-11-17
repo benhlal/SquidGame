@@ -142,19 +142,19 @@ namespace Model
         public override void Die()
         {
             base.Die();
+            if (!photonView.IsMine) return;
+
+            StartCoroutine(BloodEffect(delayValue));
+            StartCoroutine(DeclareLoser(2f));
 
             IEnumerator BloodEffect(float delay)
             {
                 yield return new WaitForSeconds(delay);
                 var bloodEffect = Instantiate(bloodSpotFx, bloodSpotPosition.position, bloodSpotFx.transform.rotation);
-                Destroy(bloodEffect, 2f);
+                Destroy(bloodEffect, 1f);
             }
 
-
-            StartCoroutine(BloodEffect(delayValue));
-            StartCoroutine(DeclareWinner(1f));
-
-            IEnumerator DeclareWinner(float delay)
+            IEnumerator DeclareLoser(float delay)
             {
                 yield return new WaitForSeconds(delay);
                 UIManager.Instance.TriggerLoseMenu();
@@ -167,6 +167,10 @@ namespace Model
         public override void Win()
         {
             base.Win();
+
+            if (!photonView.IsMine) return;
+
+            StartCoroutine(DeclareWinner(1f));
 
             IEnumerator DeclareWinner(float delay)
             {

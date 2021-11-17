@@ -637,7 +637,7 @@ MonoBehaviour:
   height: 2.14
   centerOffset: {x: 0, y: 1.9, z: 0}
   followOnStart: 0
-  smoothSpeed: 0.36
+  smoothSpeed: 2.47
 --- !u!114 &4065851851946204166
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -652,7 +652,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   movementSpeed: 100
   AudioSource: {fileID: 5667181898507016251}
-  JumpClip: {fileID: 8300000, guid: 6bd232226d5256d4b8cf4f4edefab2e1, type: 3}
+  JumpClip: {fileID: 8300000, guid: 79a5ec85e6ed2994d844f43ea870f183, type: 3}
   ShotClip: {fileID: 8300000, guid: 2ae3362fecf3b3f4c90d97ae8538c33c, type: 3}
   SprintClip: {fileID: 0}
   playerVelocity: {x: 0, y: 0, z: 0}

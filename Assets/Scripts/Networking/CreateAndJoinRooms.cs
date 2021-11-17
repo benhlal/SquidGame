@@ -3,6 +3,7 @@ using Networking.Spawn;
 using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Networking
@@ -18,16 +19,12 @@ namespace Networking
 
 
         //*****************************************************************  EVENTS *******************************************************************************
-        public override void OnEnable()
-        {
-            PhotonNetwork.AddCallbackTarget(this);
-        }
 
-        public override void OnDisable()
+        private void Start()
         {
-            PhotonNetwork.RemoveCallbackTarget(this);
+            sexe_Toggle.isOn = true;
+            sexe_Toggle.onValueChanged.AddListener(delegate { ToggleValueChanged(sexe_Toggle); });
         }
-
 
         public void CreateRoom()
         {
@@ -35,24 +32,27 @@ namespace Networking
             {
                 IsVisible = true, IsOpen = true, MaxPlayers = Convert.ToByte(roomSizeInput.text)
             };
+            SpawnPlayers.isMale = sexe_Toggle.isOn;
+
             PhotonNetwork.CreateRoom(createInput.text, roomOpt);
         }
 
         public void JoinRoom()
         {
             PhotonNetwork.JoinRoom(joinInput.text);
+            SpawnPlayers.isMale = sexe_Toggle.isOn;
         }
 
         public override void OnJoinedRoom()
         {
-            SpawnPlayers.isMale = sexe_Toggle.isOn;
             PhotonNetwork.LoadLevel(MATCH_MAKING);
         }
 
 
         void ToggleValueChanged(Toggle change)
         {
-            change.isOn = false;
+            Debug.Log("toggle status" + sexe_Toggle.isOn);
+            //change.isOn = false;
         }
     }
 }
