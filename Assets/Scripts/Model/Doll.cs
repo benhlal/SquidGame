@@ -51,6 +51,7 @@ public class Doll : MonoBehaviour
         animator = GetComponentInChildren<Animator>();
         currentInspectionTime = startInspectionTime;
         audios = GetComponent<AudioSource>();
+     
     }
 
     private void Update()
@@ -81,6 +82,7 @@ public class Doll : MonoBehaviour
                 break;
             case RobotStates.Inspecting:
                 Inspect();
+                Debug.Log("INSPECTION STATE MACHINE ");
                 break;
 
             case RobotStates.StandBy:

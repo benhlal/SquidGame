@@ -398,6 +398,9 @@ MonoBehaviour:
   - Type: 9
     SynchronizeType: 1
     Name: ISWINNER
+  - Type: 9
+    SynchronizeType: 1
+    Name: DEATHFLYING
   m_SynchronizeLayers:
   - SynchronizeType: 0
     LayerIndex: 0

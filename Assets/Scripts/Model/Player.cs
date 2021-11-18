@@ -143,11 +143,14 @@ namespace Model
 
             playerVelocity.y += gravityValue * Time.deltaTime;
             controller.Move(playerVelocity * Time.deltaTime);
+            jumpSpeed = playerVelocity.y;
+            Debug.Log("JumpVelocity:" + jumpSpeed);
         }
 
 
         public override void Die()
         {
+            Debug.Log("DIE PLAYER");
             base.Die();
             if (!photonView.IsMine) return;
             PlayBloodEffect();

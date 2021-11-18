@@ -17,14 +17,14 @@ namespace GamePlayManager
         private PhotonView localPhotonView;
 
         // Start is called before the first frame update
-        void Start()
+        private void Start()
         {
             currentTime = initialTime;
             localPhotonView = gameObject.GetComponent<PhotonView>();
         }
 
         // Update is called once per frame
-        void Update()
+        private void Update()
         {
             TimerHandler();
         }
@@ -51,6 +51,7 @@ namespace GamePlayManager
 
                 foreach (var character in playersAliveNotWinnersYet)
                 {
+                    Debug.Log("KILL ALL : "+playersAliveNotWinnersYet.Count);
                     character.Die();
                 }
             }

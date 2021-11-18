@@ -13,6 +13,7 @@ namespace Model
 
         //Animations
         protected const string DEATH_ANIMATION = "DEATH";
+        protected const string DEATH_ANIMATION_FLYING = "DEATHFLYING";
         protected const string IDLE_ANIMATION = "ISIDLE";
         protected const string RUN_ANIMATION = "RUN";
         protected const string JUMP_ANIMATION = "JUMP";
@@ -33,8 +34,10 @@ namespace Model
         [SerializeField] protected AudioClip JumpClip;
         [SerializeField] protected AudioClip ShotClip;
         [SerializeField] protected AudioClip SprintClip;
-
+        private bool jumpIsCause = false;
+        private bool runIsCause = false;
         protected float motionSpeed;
+        protected float jumpSpeed;
 
         private Vector3 characterMovementVelocityVec;
 
@@ -82,7 +85,7 @@ namespace Model
 
         public virtual void Die()
         {
-            AudioSource.clip = ShotClip;
+            Debug.Log("Call Die virtual");
 
             Debug.Log("======> Methode: [Die] Comment: [ Start DIe]  IS ALIVE  : [" + IsAlive + "] " +
                       "***  Object Type  :[ " + Rb.gameObject.name + "]  Velocity: [" + Rb.velocity + "]");
@@ -97,68 +100,48 @@ namespace Model
 
         private void DeathAudio()
         {
+            if (AudioSource.clip == ShotClip && AudioSource.isPlaying) return;
+            AudioSource.clip = ShotClip;
             AudioSource.PlayOneShot(AudioSource.clip);
-
-            /*IEnumerator DelayShotAudio(float delay)
-            {
-                yield return new WaitForSeconds(delay);
-            }
-            StartCoroutine(DelayShotAudio(0.1f));*/
+            Debug.Log("Play kill audio");
         }
 
         private void UpdateFlagsAndTriggerAnimation()
         {
             IsAlive = false;
             motionSpeed = 0f;
-            
-            IEnumerator DelayShotAudio(float delay)
-            {
-                Animator.SetTrigger(DEATH_ANIMATION);
-
-                yield return new WaitForSeconds(delay);
-            }
-            StartCoroutine(DelayShotAudio(0.1f));
+            Animator.SetTrigger(jumpIsCause ? DEATH_ANIMATION_FLYING : DEATH_ANIMATION);
             Animator.ResetTrigger(JUMP_ANIMATION);
-            
         }
 
         public virtual void Win()
         {
             IsWinner = true; // to prevent getting killer after crossing finish Line
             Animator.SetTrigger(WINNER_ANIMATION);
-
-
-            Debug.Log("======> Methode: [WIN VIRTUAL] Comment: IS ALIVE  : [" + IsAlive + "] " +
-                      "***  Object Type  :[ " + Rb.gameObject.name + "]  Velocity: [" + Rb.velocity + "]");
         }
 
         public bool IsMoving()
         {
-            var speedMagnitude = float.Parse(Rb.velocity.magnitude.ToString("N0"));
-            // var speedMagnitude = float.Parse(Rb.velocity.magnitude.ToString("N0"));
+            var counter = 0;
+            Debug.Log("IsMoving called" + counter + 1);
+            Debug.Log(" IsMoving test , Character motion speed" + motionSpeed);
 
+            return DeathCause(motionSpeed, jumpSpeed);
+        }
 
-            Debug.Log("SpeedMagnitude Decimal" + speedMagnitude);
-            Debug.Log(" METHODE : IsMoving " + "  Object  " + Rb.gameObject.name + " Velocity " +
-                      Rb.velocity.magnitude);
-
-            //this caller character
-
-            Debug.Log("Character motion speed" + motionSpeed);
-
-            bool isMoving = motionSpeed >= 1.2f;
-            if (isMoving)
+        private bool DeathCause(float runSpeed, float jumpMotion)
+        {
+            if (jumpMotion >= 2)
             {
-                Debug.Log("Player " + Rb.gameObject.name + "CAUGHT MOVING at SPEED : " + speedMagnitude +
-                          " Velocity: " + Rb.velocity.magnitude);
-                Debug.Log(" METHODE : IsMoving " + isMoving + "  Object  " + motionSpeed + " Velocity " +
-                          Rb.velocity.magnitude);
+                jumpIsCause = true;
             }
 
-            Debug.Log(" IS MOVING CHECK :" + isMoving + "  IS ALIVE  : " + IsAlive + " ***  TYPE : " +
-                      Rb.gameObject.name);
+            if (runSpeed >= 1.2f && !(jumpMotion >= 2))
+            {
+                runIsCause = true;
+            }
 
-            return isMoving;
+            return jumpIsCause || runIsCause;
         }
     }
 }
