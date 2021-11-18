@@ -15,6 +15,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Lobby.unity
     guid: 0d67a8486472d464c9c315151fe175a0
   - enabled: 1
+    path: Assets/Scenes/MM.unity
+    guid: fb21156bca9e84c42936fe2f21ca4039
+  - enabled: 1
     path: Assets/Scenes/SquidTheGame.unity
     guid: a4019a5a5044296449e50877c4f54747
   m_configObjects: {}
