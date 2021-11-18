@@ -14,7 +14,7 @@ namespace GamePlayManager.MatchMaking
         private const string LOBBY_SCENE = "Lobby";
         private PhotonView localPhotonView;
         private int playerCount;
-        private int roomSize;
+        public int roomSize;
         private int minRoomPlayers;
         [SerializeField] private TextMeshProUGUI displayPlayerCount;
         [SerializeField] private TextMeshProUGUI displayTimer;

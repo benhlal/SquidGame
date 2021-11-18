@@ -24,6 +24,7 @@ namespace Networking
         {
             sexe_Toggle.isOn = true;
             sexe_Toggle.onValueChanged.AddListener(delegate { ToggleValueChanged(sexe_Toggle); });
+            roomSizeInput.text = 1.ToString();
         }
 
         public void CreateRoom()

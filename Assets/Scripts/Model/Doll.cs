@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using GamePlayManager.MatchMaking;
 using Model;
 using UnityEngine;
 
@@ -34,27 +36,37 @@ public class Doll : MonoBehaviour
 
     public OnStopCountingDelegate OnStopCounting;
 
-    private List<Character> characters = new List<Character>();
+    private List<Character> Characters = new List<Character>();
 
 
-    void Start()
+    private void OnEnable()
     {
-        characters = FindObjectsOfType<Character>().ToList();
+        if (Characters != null) return;
+        Characters = FindObjectsOfType<Character>().ToList();
+    }
 
+    private void Start()
+    {
         player = FindObjectOfType<Player>();
         animator = GetComponentInChildren<Animator>();
         currentInspectionTime = startInspectionTime;
         audios = GetComponent<AudioSource>();
     }
 
-    void Update()
+    private void Update()
     {
-        characters = FindObjectsOfType<Character>().ToList();
+        if (Characters.Count <= 0)
+        {
+            //adding spawn characters
+            Characters = FindObjectsOfType<Character>().ToList();
+            //to remove since MatchMaking step was added 
+        }
+        Characters = FindObjectsOfType<Character>().ToList();
 
-        if (characters == null) return;
-        if (characters.Count <= 0) return;
+        if (Characters == null) return;
+        if (Characters.Count <= 0) return;
         var playersAliveNotWinnersYet =
-            characters.Where(character => (character.IsAlive && !character.IsWinner)).ToList();
+            Characters.Where(character => (character.IsAlive && !character.IsWinner)).ToList();
 
         StateMachine();
         if (playersAliveNotWinnersYet.Count == 0) currentState = RobotStates.StandBy;
@@ -75,81 +87,67 @@ public class Doll : MonoBehaviour
                 StandBy();
                 break;
             default:
+                Debug.Log("Default State");
                 break;
         }
     }
 
     private void StandBy()
     {
-          animator.SetTrigger("DanceForSurvivors");
+        animator.SetTrigger("DanceForSurvivors");
     }
 
     private void Count()
     {
-        if (!audios.isPlaying)
-        {
-            animator.SetTrigger("inspect");
-            currentState = RobotStates.Inspecting;
-            OnStopCounting?.Invoke();
-        }
+        if (audios.isPlaying) return;
+        animator.SetTrigger("inspect"); // trigger inspection animation
+        currentState = RobotStates.Inspecting;
+        OnStopCounting?.Invoke();
     }
 
     private void Inspect()
     {
-        // audios.clip = audio2;
-        // audios.PlayOneShot(audio2);
-        Debug.Log("======> Methode: [Inspect] Comment: [Doll Inspecting moving players]  Characters:[ " + characters +
-                  "]  Count : [" + characters.Count + "]");
+        Debug.Log("Methode: [Inspect] Comment: [Doll Inspecting moving players]  Characters in scene:[ " + Characters +
+                  "]  Count : [" + Characters.Count + "]");
         if (currentInspectionTime > 0)
         {
-            currentInspectionTime -= Time.deltaTime;
-            var charsToDestroy = new List<Character>();
-            foreach (var character in characters)
-            {
-                if (character.IsMoving())
-                {
-                    charsToDestroy.Add(character);
-                }
-            }
-
-            foreach (var character in charsToDestroy)
-            {
-                if (character.IsMoving())
-                {
-                    Debug.Log("======> Methode: [Inspect] Comment: [Characters to Kill]  charsToDestroy:[ " +
-                              charsToDestroy + "]  Count : [" + charsToDestroy.Count + "]");
-
-
-                    characters.Remove(character);
-                    Debug.Log("======> Methode: [Inspect] Comment: [Survivors]  characters:[ " + characters +
-                              "]  Count : [" + characters.Count + "]");
-
-
-                    Debug.Log("Calling Die with this character : " + character.name);
-                    character.Die();
-                }
-            }
-
-
-            /*
-            var leftPlayers = characters.Where(character => (!character.isImmortal && !character.canMove)).ToList();
-
-            if (leftPlayers.Count == 0)
-            {
-                
-                currentState = RobotStates.StandBy;
-              
-
-            }  */
+            currentInspectionTime -= Time.deltaTime; // inspection countDown
+            var movingCharacters = new List<Character>();
+            CollectingMovingCharactersDuringInspection(movingCharacters);
+            KillCharacterMoved(movingCharacters);
         }
         else
         {
-            currentInspectionTime = startInspectionTime;
-            animator.SetTrigger("inspect");
-            audios.clip = audio1;
-            audios.Play();
-            currentState = RobotStates.Counting;
-            OnStartCounting?.Invoke();
+            BackToCounting();
+        }
+    }
+
+    private void BackToCounting()
+    {
+        currentInspectionTime = startInspectionTime; // reset inspectionTime
+        animator.SetTrigger("inspect");
+        audios.clip = audio1; // change audioClip
+        audios.Play(); //playAudio
+        currentState = RobotStates.Counting; //change state
+        OnStartCounting?.Invoke();
+    }
+
+    private void CollectingMovingCharactersDuringInspection(List<Character> charsToDestroy)
+    {
+        charsToDestroy.AddRange(Characters.Where(character => character.IsMoving()));
+    }
+
+    private void KillCharacterMoved(List<Character> charsToDestroy)
+    {
+        foreach (var character in charsToDestroy)
+        {
+            Debug.Log("======> Methode: [Inspect] Comment: [Characters to Kill]  charsToDestroy:[ " +
+                      charsToDestroy + "]  Count : [" + charsToDestroy.Count + "]");
+
+            //update Players list
+            Characters.Remove(character);
+            Debug.Log("Calling Die with this character : " + character.name);
+            character.Die();
         }
     }
 }

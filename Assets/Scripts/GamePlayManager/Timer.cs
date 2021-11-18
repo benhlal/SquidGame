@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Model;
+using Photon.Pun;
 using TMPro;
 using UnityEngine;
 
@@ -13,15 +14,22 @@ namespace GamePlayManager
         [SerializeField] private float initialTime = 60f;
         private List<Character> playersAliveNotWinnersYet;
         private float currentTime;
+        private PhotonView localPhotonView;
 
         // Start is called before the first frame update
         void Start()
         {
             currentTime = initialTime;
+            localPhotonView = gameObject.GetComponent<PhotonView>();
         }
 
         // Update is called once per frame
         void Update()
+        {
+            TimerHandler();
+        }
+
+        private void TimerHandler()
         {
             var aliveChars = FindObjectsOfType<Character>();
             playersAliveNotWinnersYet =
@@ -32,6 +40,10 @@ namespace GamePlayManager
                 TimeSpan span = TimeSpan.FromSeconds(currentTime);
                 timerText.text = span.ToString(@"mm\:ss");
                 Debug.Log("Current Time :" + currentTime);
+                if (PhotonNetwork.IsMasterClient)
+                {
+                    localPhotonView.RPC("RPC_SendTimerCountDown", RpcTarget.Others, currentTime);
+                }
             }
             else
             {
@@ -41,6 +53,18 @@ namespace GamePlayManager
                 {
                     character.Die();
                 }
+            }
+        }
+
+
+        [PunRPC]
+        private void RPC_SendTimerCountDown(float timeIn)
+        {
+            currentTime = timeIn;
+
+            if (timeIn < currentTime)
+            {
+                currentTime = timeIn;
             }
         }
     }

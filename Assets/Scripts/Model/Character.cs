@@ -1,4 +1,5 @@
 using System.Collections;
+using GamePlayManager.MatchMaking;
 using UnityEngine;
 
 namespace Model
@@ -18,13 +19,13 @@ namespace Model
         protected const string WINNER_ANIMATION = "ISWINNER";
         protected const string SPEED = "SPEED";
 
-        protected string PlayerStatus;
 
         // Flags
         public bool CanPlay { get; set; }
         public bool IsAlive { get; set; }
 
         public bool IsWinner { get; set; }
+        public bool CanJump { get; set; }
 
         protected float VerticalDirection = 1;
         [SerializeField] protected float movementSpeed = 100f;
@@ -43,6 +44,11 @@ namespace Model
             Rb = GetComponent<Rigidbody>();
             Animator = GetComponentInChildren<Animator>();
             AudioSource = GetComponent<AudioSource>();
+            InitFlags();
+        }
+
+        private void InitFlags()
+        {
             CanPlay = true;
             IsAlive = true;
         }
@@ -52,6 +58,7 @@ namespace Model
         {
             CanPlay = (IsAlive && !IsWinner);
 
+            /*
             if (CanPlay)
             {
                 //Setting up movement vector
@@ -69,29 +76,50 @@ namespace Model
                           IsAlive + "] " + "***  Object Type  :[ " + Rb.gameObject.name + "]  Velocity: [" +
                           Rb.velocity +
                           "]");
-            }
+            }*/
         }
 
 
         public virtual void Die()
         {
+            AudioSource.clip = ShotClip;
+
             Debug.Log("======> Methode: [Die] Comment: [ Start DIe]  IS ALIVE  : [" + IsAlive + "] " +
                       "***  Object Type  :[ " + Rb.gameObject.name + "]  Velocity: [" + Rb.velocity + "]");
-            AudioSource.clip = ShotClip;
-            AudioSource.PlayOneShot(AudioSource.clip);
 
-            IEnumerator TriggerDeathAnim(float delay)
-            {
-                yield return new WaitForSeconds(delay);
-                Animator.SetTrigger(DEATH_ANIMATION);
-            }
-            IsAlive = false;
-
-            StartCoroutine(TriggerDeathAnim(0.3f));
+            DeathAudio();
+            UpdateFlagsAndTriggerAnimation();
 
 
             Debug.Log("======> Methode: [Die] Comment: [ Dead ]  IS ALIVE  : [" + IsAlive + "] " +
                       "***  Object Type  :[ " + Rb.gameObject.name + "]  Velocity: [" + Rb.velocity + "]");
+        }
+
+        private void DeathAudio()
+        {
+            AudioSource.PlayOneShot(AudioSource.clip);
+
+            /*IEnumerator DelayShotAudio(float delay)
+            {
+                yield return new WaitForSeconds(delay);
+            }
+            StartCoroutine(DelayShotAudio(0.1f));*/
+        }
+
+        private void UpdateFlagsAndTriggerAnimation()
+        {
+            IsAlive = false;
+            motionSpeed = 0f;
+            
+            IEnumerator DelayShotAudio(float delay)
+            {
+                Animator.SetTrigger(DEATH_ANIMATION);
+
+                yield return new WaitForSeconds(delay);
+            }
+            StartCoroutine(DelayShotAudio(0.1f));
+            Animator.ResetTrigger(JUMP_ANIMATION);
+            
         }
 
         public virtual void Win()
@@ -107,19 +135,23 @@ namespace Model
         public bool IsMoving()
         {
             var speedMagnitude = float.Parse(Rb.velocity.magnitude.ToString("N0"));
+            // var speedMagnitude = float.Parse(Rb.velocity.magnitude.ToString("N0"));
 
 
-             Debug.Log("SpeedMagnitude Decimal" + speedMagnitude);
+            Debug.Log("SpeedMagnitude Decimal" + speedMagnitude);
             Debug.Log(" METHODE : IsMoving " + "  Object  " + Rb.gameObject.name + " Velocity " +
                       Rb.velocity.magnitude);
 
             //this caller character
-            bool isMoving = Rb.velocity.magnitude > 2.5f;
+
+            Debug.Log("Character motion speed" + motionSpeed);
+
+            bool isMoving = motionSpeed >= 1.2f;
             if (isMoving)
             {
                 Debug.Log("Player " + Rb.gameObject.name + "CAUGHT MOVING at SPEED : " + speedMagnitude +
                           " Velocity: " + Rb.velocity.magnitude);
-                Debug.Log(" METHODE : IsMoving " + isMoving + "  Object  " + Rb.gameObject.name + " Velocity " +
+                Debug.Log(" METHODE : IsMoving " + isMoving + "  Object  " + motionSpeed + " Velocity " +
                           Rb.velocity.magnitude);
             }
 

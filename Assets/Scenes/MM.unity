@@ -527,7 +527,7 @@ GameObject:
   - component: {fileID: 90561532}
   m_Layer: 0
   m_Name: MatchMakingManager
-  m_TagString: Untagged
+  m_TagString: matchMaker
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -544,6 +544,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1854341f045f28f4385da59931a0906b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  roomSize: 0
   displayPlayerCount: {fileID: 156108840}
   displayTimer: {fileID: 2137711577}
   maxWaitTime: 30

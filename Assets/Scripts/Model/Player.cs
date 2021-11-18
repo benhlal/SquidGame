@@ -26,7 +26,6 @@ namespace Model
 
         private Transform cameraMain;
         private Vector3 move;
-        private bool canJump = true;
         private PhotonView photonView;
         protected Vector2 movementInput;
 
@@ -101,14 +100,22 @@ namespace Model
 
             if (CanPlay)
             {
+                Debug.Log("FrameRate : " + Time.deltaTime);
                 var motionVector = move * Time.deltaTime * playerSpeed;
+
+                Debug.Log("motionVector : " + motionVector);
+                Debug.Log("motionVector  coordinates: (" + motionVector.x + "," + motionVector.y + "," +
+                          motionVector.z + ")");
+                Debug.Log("Player motionVector magnitude " + motionVector.magnitude);
+
                 controller.Move(motionVector);
                 Animator.SetFloat(SPEED, controller.velocity.magnitude);
                 Debug.Log("Input Speed magnitude " +
                           controller.velocity.magnitude); // from 0 to 8 defined in  playerSpeed
                 Debug.Log("Player Motion Speed " + motionVector.magnitude);
                 Debug.Log("RB Speed " + Rb.velocity.magnitude);
-                motionSpeed = motionVector.magnitude;
+                motionSpeed = motionVector.magnitude * 10;
+                Debug.Log("motionSpeed " + motionVector.magnitude);
             }
             else
             {
@@ -125,7 +132,7 @@ namespace Model
         private void Jump()
         {
             // Changes the height position of the player..
-            if (playerControls.Player.Jump.triggered && groundedPlayer && canJump)
+            if (playerControls.Player.Jump.triggered && groundedPlayer && CanPlay)
             {
                 playerVelocity.y += Mathf.Sqrt(jumpHeight * -3.0f * gravityValue);
                 Animator.SetTrigger(JUMP_ANIMATION);
@@ -143,9 +150,24 @@ namespace Model
         {
             base.Die();
             if (!photonView.IsMine) return;
+            PlayBloodEffect();
+            CallLoseMenu();
+        }
 
-            StartCoroutine(BloodEffect(delayValue));
+        private void CallLoseMenu()
+        {
             StartCoroutine(DeclareLoser(2f));
+
+            IEnumerator DeclareLoser(float delay)
+            {
+                yield return new WaitForSeconds(delay);
+                UIManager.Instance.TriggerLoseMenu();
+            }
+        }
+
+        private void PlayBloodEffect()
+        {
+            StartCoroutine(BloodEffect(delayValue));
 
             IEnumerator BloodEffect(float delay)
             {
@@ -153,15 +175,6 @@ namespace Model
                 var bloodEffect = Instantiate(bloodSpotFx, bloodSpotPosition.position, bloodSpotFx.transform.rotation);
                 Destroy(bloodEffect, 1f);
             }
-
-            IEnumerator DeclareLoser(float delay)
-            {
-                yield return new WaitForSeconds(delay);
-                UIManager.Instance.TriggerLoseMenu();
-            }
-
-            Animator.ResetTrigger(JUMP_ANIMATION);
-            canJump = false;
         }
 
         public override void Win()
