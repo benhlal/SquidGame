@@ -1,5 +1,4 @@
 using System;
-using Networking.Spawn;
 using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
@@ -15,10 +14,17 @@ namespace Networking
         public TMP_InputField roomSizeInput;
         public Toggle sexe_Toggle;
 
+
+        public Button createBtn;
         private const String MATCH_MAKING = "MM";
 
 
         //*****************************************************************  EVENTS *******************************************************************************
+
+        private void Awake()
+        {
+            createInput.onValueChanged.AddListener(ValidateInput);
+        }
 
         private void Start()
         {
@@ -29,11 +35,11 @@ namespace Networking
 
         public void CreateRoom()
         {
-            RoomOptions roomOpt = new RoomOptions()
+            var roomOpt = new RoomOptions()
             {
                 IsVisible = true, IsOpen = true, MaxPlayers = Convert.ToByte(roomSizeInput.text)
             };
-            SpawnPlayers.isMale = sexe_Toggle.isOn;
+            PlayersManager.PlayersManager.isMale = sexe_Toggle.isOn;
 
             PhotonNetwork.CreateRoom(createInput.text, roomOpt);
         }
@@ -41,7 +47,7 @@ namespace Networking
         public void JoinRoom()
         {
             PhotonNetwork.JoinRoom(joinInput.text);
-            SpawnPlayers.isMale = sexe_Toggle.isOn;
+            PlayersManager.PlayersManager.isMale = sexe_Toggle.isOn;
         }
 
         public override void OnJoinedRoom()
@@ -50,10 +56,22 @@ namespace Networking
         }
 
 
-        void ToggleValueChanged(Toggle change)
+        private void ToggleValueChanged(Toggle change)
         {
             Debug.Log("toggle status" + sexe_Toggle.isOn);
             //change.isOn = false;
+        }
+
+
+        private void ValidateInput(string input)
+        {
+            // Here you could implement some replace or further validation logic
+            // if e.g. only certain characters shall be allowed
+
+            // Enable the button only if some valid input is available
+            createBtn.interactable = !string.IsNullOrWhiteSpace(input);
+
+            // just a bonus if you want to show an info box why input is invalid
         }
     }
 }

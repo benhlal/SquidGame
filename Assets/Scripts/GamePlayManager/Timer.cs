@@ -49,6 +49,7 @@ namespace GamePlayManager
             {
                 Debug.Log("Number of player didn't make it  :" + playersAliveNotWinnersYet.Count);
 
+                if (playersAliveNotWinnersYet.Count == 0) return;
                 foreach (var character in playersAliveNotWinnersYet)
                 {
                     Debug.Log("KILL ALL : "+playersAliveNotWinnersYet.Count);

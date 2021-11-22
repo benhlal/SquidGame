@@ -17,6 +17,7 @@ namespace Model
         protected const string IDLE_ANIMATION = "ISIDLE";
         protected const string RUN_ANIMATION = "RUN";
         protected const string JUMP_ANIMATION = "JUMP";
+        protected const string STUMPLE_ANIMATION = "STUMPLE";
         protected const string WINNER_ANIMATION = "ISWINNER";
         protected const string SPEED = "SPEED";
 
@@ -27,6 +28,7 @@ namespace Model
 
         public bool IsWinner { get; set; }
         public bool CanJump { get; set; }
+        public bool Stumple { get; set; }
 
         protected float VerticalDirection = 1;
         [SerializeField] protected float movementSpeed = 100f;

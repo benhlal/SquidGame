@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using GamePlayManager.MatchMaking;
 using Model;
+using TMPro;
 using UnityEngine;
 
 enum RobotStates
@@ -22,8 +23,6 @@ public class Doll : MonoBehaviour
 
     private Animator animator;
 
-    private Player player;
-
     private RobotStates currentState = RobotStates.Counting;
 
     private float currentInspectionTime = 2f;
@@ -38,6 +37,7 @@ public class Doll : MonoBehaviour
 
     private List<Character> Characters = new List<Character>();
 
+    [SerializeField] private TextMeshProUGUI displaySurvivorsCount;
 
     private void OnEnable()
     {
@@ -47,11 +47,10 @@ public class Doll : MonoBehaviour
 
     private void Start()
     {
-        player = FindObjectOfType<Player>();
         animator = GetComponentInChildren<Animator>();
         currentInspectionTime = startInspectionTime;
         audios = GetComponent<AudioSource>();
-     
+        Debug.Log("START DOLL");
     }
 
     private void Update()
@@ -62,15 +61,20 @@ public class Doll : MonoBehaviour
             Characters = FindObjectsOfType<Character>().ToList();
             //to remove since MatchMaking step was added 
         }
+
         Characters = FindObjectsOfType<Character>().ToList();
 
         if (Characters == null) return;
         if (Characters.Count <= 0) return;
-        var playersAliveNotWinnersYet =
-            Characters.Where(character => (character.IsAlive && !character.IsWinner)).ToList();
+        var playersAliveNotWinnersYet = GetAlivePlayers();
 
+        displaySurvivorsCount.text = playersAliveNotWinnersYet.Count.ToString();
         StateMachine();
-        if (playersAliveNotWinnersYet.Count == 0) currentState = RobotStates.StandBy;
+        if (playersAliveNotWinnersYet.Count == 0)
+        {
+            currentState = RobotStates.StandBy;
+            audios.Stop();
+        }
     }
 
     private void StateMachine()
@@ -97,6 +101,7 @@ public class Doll : MonoBehaviour
     private void StandBy()
     {
         animator.SetTrigger("DanceForSurvivors");
+        Debug.Log("All Dead");
     }
 
     private void Count()
@@ -136,7 +141,7 @@ public class Doll : MonoBehaviour
 
     private void CollectingMovingCharactersDuringInspection(List<Character> charsToDestroy)
     {
-        charsToDestroy.AddRange(Characters.Where(character => character.IsMoving()));
+        charsToDestroy.AddRange(Characters.Where(character => character.IsMoving() && character.IsAlive));
     }
 
     private void KillCharacterMoved(List<Character> charsToDestroy)
@@ -151,5 +156,10 @@ public class Doll : MonoBehaviour
             Debug.Log("Calling Die with this character : " + character.name);
             character.Die();
         }
+    }
+
+    private List<Character> GetAlivePlayers()
+    {
+        return Characters.Where(character => (character.IsAlive && !character.IsWinner)).ToList();
     }
 }

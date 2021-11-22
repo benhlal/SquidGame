@@ -43,7 +43,7 @@ namespace Model
         {
             Animator = GetComponentInChildren<Animator>();
             Rb = GetComponent<Rigidbody>();
-
+            Debug.Log("PLAYER START");
 
             gameobjectName = gameObject.name;
             IsAlive = true;
@@ -186,7 +186,10 @@ namespace Model
 
             if (!photonView.IsMine) return;
 
-            StartCoroutine(DeclareWinner(1f));
+            if (IsAlive)
+            {
+                StartCoroutine(DeclareWinner(1f));
+            }
 
             IEnumerator DeclareWinner(float delay)
             {
@@ -205,5 +208,16 @@ namespace Model
         {
             playerControls.Enable();
         }
+
+        /*
+         *
+         *    private void OnTriggerEnter(Collider other)
+               {
+                   if (!other.CompareTag("Player")) return;
+       
+                   Debug.Log("targ is player" + other.gameObject.name + "  " + other.gameObject.tag);
+                   Animator.SetTrigger(STUMPLE_ANIMATION);
+               }
+         */
     }
 }
