@@ -28,8 +28,12 @@ namespace Model
         private Vector3 move;
         private PhotonView photonView;
         protected Vector2 movementInput;
+        private bool playerIsFalling = false;
 
         private string gameobjectName;
+        private int collisionCounter = 0;
+
+        private CameraWork _cameraWork;
         //*****************************************************************  EVENTS *******************************************************************************
 
 
@@ -54,7 +58,7 @@ namespace Model
 
             photonView = GetComponent<PhotonView>();
 
-            CameraWork _cameraWork = gameObject.GetComponent<CameraWork>();
+            _cameraWork = gameObject.GetComponent<CameraWork>();
 
 
             if (_cameraWork != null)
@@ -74,14 +78,15 @@ namespace Model
         private void Update()
         {
             CanPlay = (IsAlive && !IsWinner);
+            groundedPlayer = controller.isGrounded;
             if (!photonView.IsMine) return;
             Run();
             Jump();
+            isFalling();
         }
 
         private void Run()
         {
-            groundedPlayer = controller.isGrounded;
             if (groundedPlayer && playerVelocity.y < 0)
             {
                 playerVelocity.y = 0f;
@@ -134,23 +139,47 @@ namespace Model
             // Changes the height position of the player..
             if (playerControls.Player.Jump.triggered && groundedPlayer && CanPlay)
             {
-                playerVelocity.y += Mathf.Sqrt(jumpHeight * -3.0f * gravityValue);
+                Debug.Log("JUMP TRIGGERED" + playerVelocity.y);
+                playerVelocity.y += Mathf.Sqrt(jumpHeight * -3.0f * gravityValue); //4.305915
                 Animator.SetTrigger(JUMP_ANIMATION);
                 Animator.SetBool(IDLE_ANIMATION, false);
                 AudioSource.clip = JumpClip;
                 AudioSource.PlayOneShot(AudioSource.clip);
+                Debug.Log("JUMP TRIGGERED SQUR" + playerVelocity.y);
             }
 
             playerVelocity.y += gravityValue * Time.deltaTime;
+
             controller.Move(playerVelocity * Time.deltaTime);
             jumpSpeed = playerVelocity.y;
             Debug.Log("JumpVelocity:" + jumpSpeed);
         }
 
+        private void isFalling()
+        {
+            if (!playerIsFalling) return;
+            Animator.SetFloat("FALLING_VELOCITY", playerVelocity.y);
+            if (groundedPlayer || playerVelocity.y <= -36)
+            {
+                Debug.Log("stop falling");
 
+                Animator.SetBool(FREE_FALL_ANIMATION, false);
+                playerIsFalling = false;
+                IsAlive = false;
+                var camer = GetComponent<CameraWork>();
+                camer.distance = 4f;
+            }
+            else
+            {
+                Debug.Log("Player is falling");
+
+                Animator.SetBool(FREE_FALL_ANIMATION, true);
+            }
+        }
+ 
         public override void Die()
         {
-            Debug.Log("DIE PLAYER");
+            Debug.Log("DIE PLAYER"); 
             base.Die();
             if (!photonView.IsMine) return;
             PlayBloodEffect();
@@ -183,7 +212,7 @@ namespace Model
         public override void Win()
         {
             base.Win();
-
+ 
             if (!photonView.IsMine) return;
 
             if (IsAlive)
@@ -209,15 +238,27 @@ namespace Model
             playerControls.Enable();
         }
 
-        /*
-         *
-         *    private void OnTriggerEnter(Collider other)
-               {
-                   if (!other.CompareTag("Player")) return;
-       
-                   Debug.Log("targ is player" + other.gameObject.name + "  " + other.gameObject.tag);
-                   Animator.SetTrigger(STUMPLE_ANIMATION);
-               }
-         */
+
+        private void OnCollisionEnter(Collision other)
+        {
+            if (!other.gameObject.CompareTag("BreakableGlass")) return;
+            Debug.Log("COLLID WITH MIRROR " + other.gameObject.name);
+            var window = other.gameObject.GetComponent<Breakable>();
+            if (!window.BreakOnCollision) return;
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            Debug.Log("COLLID WITH Black " + other.gameObject.name);
+
+            if (!other.gameObject.CompareTag("Black")) return;
+            playerIsFalling = true;
+            collisionCounter++;
+            // Animator.SetBool(FREE_FALL_ANIMATION, true);
+
+            // gameObject.GetComponent<CapsuleCollider>().isTrigger = true;
+            Debug.Log("isFallingFlag " + playerIsFalling);
+            Debug.Log("isFallingFlag  col counter " + collisionCounter);
+        }
     }
 }

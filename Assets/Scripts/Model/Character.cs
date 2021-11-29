@@ -1,5 +1,3 @@
-using System.Collections;
-using GamePlayManager.MatchMaking;
 using UnityEngine;
 
 namespace Model
@@ -19,6 +17,7 @@ namespace Model
         protected const string JUMP_ANIMATION = "JUMP";
         protected const string STUMPLE_ANIMATION = "STUMPLE";
         protected const string WINNER_ANIMATION = "ISWINNER";
+        protected const string FREE_FALL_ANIMATION = "FALLING";
         protected const string SPEED = "SPEED";
 
 

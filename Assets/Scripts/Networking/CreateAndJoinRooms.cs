@@ -1,4 +1,5 @@
 using System;
+using OnlineGameManager;
 using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
@@ -14,9 +15,10 @@ namespace Networking
         public TMP_InputField roomSizeInput;
         public Toggle sexe_Toggle;
 
-
+        [SerializeField] public GameManager GameManager;
         public Button createBtn;
         private const String MATCH_MAKING = "MM";
+        private const String BRIDGE = "Bridge";
 
 
         //*****************************************************************  EVENTS *******************************************************************************
@@ -35,19 +37,29 @@ namespace Networking
 
         public void CreateRoom()
         {
-            var roomOpt = new RoomOptions()
+            var roomName = createInput.text;
+            SetPlayerGendre();
+            GameManager.CreateRoomWithOptions(roomName, RoomOptions());
+        }
+
+        private void SetPlayerGendre()
+        {
+            PlayersManager.PlayersManager.isMale = sexe_Toggle.isOn;
+        }
+
+        private RoomOptions RoomOptions()
+        {
+            return new RoomOptions()
             {
                 IsVisible = true, IsOpen = true, MaxPlayers = Convert.ToByte(roomSizeInput.text)
             };
-            PlayersManager.PlayersManager.isMale = sexe_Toggle.isOn;
-
-            PhotonNetwork.CreateRoom(createInput.text, roomOpt);
         }
 
         public void JoinRoom()
         {
-            PhotonNetwork.JoinRoom(joinInput.text);
-            PlayersManager.PlayersManager.isMale = sexe_Toggle.isOn;
+            var roomNameToJoin = joinInput.text;
+            GameManager.JoinRoomWithName(roomNameToJoin);
+            SetPlayerGendre();
         }
 
         public override void OnJoinedRoom()

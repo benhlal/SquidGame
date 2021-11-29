@@ -22,11 +22,11 @@ namespace Photon.Pun.Demo.PunBasics
         #region Private Fields
 
         [Tooltip("The distance in the local x-z plane to the target")] [SerializeField]
-        private float distance = 4.6f;
+        public float distance = 4.6f;
 
 
         [Tooltip("The height we want the camera to be above the target")] [SerializeField]
-        private float height = 2.38f;
+        public float height = 2.38f;
 
 
         [Tooltip(

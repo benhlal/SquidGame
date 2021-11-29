@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using OnlineGameManager;
 using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
@@ -11,30 +12,24 @@ namespace PlayersManager.MatchMaking
     {
         //*****************************************************************  EVENTS *******************************************************************************
         private const float FLT_EPSILON = 0.01f;
-        private const string GAME_SCENE = "SquidTheGame";
-        private const string GAME_SCENE_L1 = "SquidTheGameL1";
-        private const string LOBBY_SCENE = "Lobby";
+        private const string GAME_SCENE = "Bridge";
         private PhotonView localPhotonView;
         private int playerCount;
         public int roomSize;
         private int minRoomPlayers;
-        [SerializeField] private TextMeshProUGUI displayPlayerCount;
-        [SerializeField] private TextMeshProUGUI displayTimer;
-
         private bool readyToCountDown;
         private bool readyToStart;
         private bool startingGame;
-
         private float timerToStartGame;
         private float notFullGameTimer;
         private float FullGameTimer;
-
+        [SerializeField] private TextMeshProUGUI displayPlayerCount;
+        [SerializeField] private TextMeshProUGUI displayTimer;
         [SerializeField] private float maxWaitTime;
         [SerializeField] private float maxFullGameWaitTime;
-
         [SerializeField] public AudioClip audioClip1;
-        [SerializeField] public AudioClip audioClip2;
         [SerializeField] public AudioSource audioSource;
+
 
         private void Start()
         {
@@ -57,6 +52,7 @@ namespace PlayersManager.MatchMaking
         {
             playerCount = PhotonNetwork.PlayerList.Length;
             roomSize = PhotonNetwork.CurrentRoom.MaxPlayers;
+            if (displayPlayerCount == null) return;
             displayPlayerCount.text = playerCount + "/" + roomSize;
 
             if (playerCount == roomSize)
@@ -92,14 +88,14 @@ namespace PlayersManager.MatchMaking
             }
 
             var span = TimeSpan.FromSeconds(timerToStartGame);
-            displayTimer.text = span.ToString(@"ss");
-            //   displayTimer.text = "Match will start in : " + span.ToString(@"mm\:ss") + "";
-            Debug.Log("timerToStartGame :" + timerToStartGame);
-            if (timerToStartGame <= 0f)
+            if (displayTimer != null)
             {
-                if (startingGame) return;
-                StartGame();
+                displayTimer.text = span.ToString(@"ss");
             }
+
+            if (!(timerToStartGame <= 0f)) return;
+            if (startingGame) return;
+            StartGame();
         }
 
         private void ManageStartupAudio()
@@ -140,14 +136,6 @@ namespace PlayersManager.MatchMaking
             PlayerCountUpdater();
         }
 
-        private void StartGame()
-        {
-            startingGame = true;
-
-            if (!PhotonNetwork.IsMasterClient) return;
-            PhotonNetwork.CurrentRoom.IsOpen = false;
-            PhotonNetwork.LoadLevel(GAME_SCENE);
-        }
 
         private void ResetTimer()
         {
@@ -156,12 +144,13 @@ namespace PlayersManager.MatchMaking
             FullGameTimer = maxFullGameWaitTime;
         }
 
-        public void ExitRoom()
+
+        private void StartGame()
         {
-            if (!photonView.IsMine) return;
-            PhotonNetwork.LeaveRoom();
-            PhotonNetwork.LoadLevel(LOBBY_SCENE);
+            startingGame = true;
+            GameManager.StartGameTargetScene(GAME_SCENE);
         }
+
 
         private static IEnumerator StartFade(AudioSource audioSource, float duration, float targetVolume)
         {

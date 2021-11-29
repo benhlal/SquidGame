@@ -546,13 +546,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   roomSize: 0
-  roomSisfsdze: 0
   displayPlayerCount: {fileID: 156108840}
   displayTimer: {fileID: 2137711577}
   maxWaitTime: 30
-  maxFullGameWaitTime: 10
+  maxFullGameWaitTime: 2
   audioClip1: {fileID: 8300000, guid: 8f076ae971fa37544b070dfff789af9a, type: 3}
-  audioClip2: {fileID: 0}
   audioSource: {fileID: 90561533}
 --- !u!4 &90561531
 Transform:
@@ -566,7 +564,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &90561532
 MonoBehaviour:
@@ -1105,16 +1103,16 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 90561530}
-        m_TargetAssemblyTypeName: MatchMakingManager, Assembly-CSharp
-        m_MethodName: ExitRoom
-        m_Mode: 1
+      - m_Target: {fileID: 731165399}
+        m_TargetAssemblyTypeName: OnlineGameManager.GameManager, Assembly-CSharp
+        m_MethodName: ExitRoomGoToScene
+        m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: Loading
+          m_StringArgument: Lobby
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &419188466
@@ -1604,13 +1602,56 @@ RectTransform:
   - {fileID: 2137711579}
   - {fileID: 1953537831}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 23.978, y: -1.713, z: 0.406}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!1 &731165398
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 731165400}
+  - component: {fileID: 731165399}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &731165399
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 731165398}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 145d98848d0cff84d824af0f81a1323b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &731165400
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 731165398}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 288, y: 95.09421, z: -58.800003}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &767330687
 GameObject:
   m_ObjectHideFlags: 0
@@ -2295,7 +2336,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1360068699
 GameObject:
@@ -3274,7 +3315,7 @@ Transform:
   - {fileID: 837036254}
   - {fileID: 1603993874}
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1806231074
 GameObject:
@@ -3308,7 +3349,7 @@ Transform:
   - {fileID: 653260038}
   - {fileID: 581807273}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1823485377
 GameObject:
@@ -3407,7 +3448,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
