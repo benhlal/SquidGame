@@ -1,17 +1,20 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Model;
 using Photon.Pun;
 using TMPro;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace GamePlayManager
 {
     public class TimerBridge : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI timerText;
-        [SerializeField] private float initialTime = 60f;
+        [SerializeField] public float initialTime = 10f;
         private List<Character> playersAliveNotWinnersYet;
         private float currentTime;
         private PhotonView localPhotonView;
@@ -53,13 +56,39 @@ namespace GamePlayManager
                 Debug.Log("Number of player didn't make it  :" + playersAliveNotWinnersYet.Count);
 
                 if (breakableWindows.Count == 0) return;
-                foreach (var window in breakableWindows)
-                {
-                    window.BreakFunction();
-                }
+
+                BlowGlassSquare(breakableWindows);
             }
         }
 
+
+        private void BlowGlassSquare(List<Breakable> windows)
+        {
+            // var leftBreakableWindows = breakableWindows.Where(w => w.transform.parent.name.Contains("Left"))
+            //     .OrderByDescending(w => w.name)
+            //     .ToList();
+            // var rightBreakableWindows = breakableWindows.Where(w => w.transform.parent.name.Contains("Right"))
+            //     .OrderByDescending(w => w.name)
+            //     .ToList();
+
+            var ordered = windows.OrderBy(w => w.name);
+
+
+            foreach (var window in windows)
+            {
+                var explosionEffect = Instantiate(window.explosionEffect, window.explosionSpot.position,
+                    window.explosionEffect.transform.rotation);
+                Destroy(explosionEffect, 0.2f);
+                window.BreakFunction();
+                Debug.Log("window to break " + window.name);
+                breakableWindows.Remove(window);
+            }
+
+            foreach (var character in playersAliveNotWinnersYet)
+            {
+                character.playerIsFalling = true;
+            }
+        }
 
         [PunRPC]
         private void RPC_SendTimerCountDown(float timeIn)

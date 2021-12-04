@@ -22,19 +22,22 @@ namespace Model
         [SerializeField] private ParticleSystem bloodSpotFx;
         [SerializeField] Transform bloodSpotPosition;
         [SerializeField] float delayValue = 0.2f;
-
+        private int soundNumber;
 
         private Transform cameraMain;
         private Vector3 move;
         private PhotonView photonView;
         protected Vector2 movementInput;
-        private bool playerIsFalling = false;
 
         private string gameobjectName;
         private int collisionCounter = 0;
+        public AudioClip[] FoosStepsSoundClips;
+        public AudioClip ImpactBodyClip;
 
         private CameraWork _cameraWork;
+
         //*****************************************************************  EVENTS *******************************************************************************
+        public bool PlaySound = true;
 
 
         private void Awake()
@@ -48,6 +51,14 @@ namespace Model
             Animator = GetComponentInChildren<Animator>();
             Rb = GetComponent<Rigidbody>();
             Debug.Log("PLAYER START");
+            if (GetComponent<AudioSource>() != null)
+            {
+                AudioSource = GetComponent<AudioSource>();
+            }
+            else
+            {
+                PlaySound = false;
+            }
 
             gameobjectName = gameObject.name;
             IsAlive = true;
@@ -82,7 +93,10 @@ namespace Model
             if (!photonView.IsMine) return;
             Run();
             Jump();
-            isFalling();
+            Falling();
+            //    Push();
+            //    Push();
+            Debug.Log("current animation " + Animator.GetCurrentAnimatorClipInfo(0)[0].clip.name);
         }
 
         private void Run()
@@ -128,9 +142,10 @@ namespace Model
                 move = Vector3.zero;
             }
 
-            if (move != Vector3.zero)
+            if (move != Vector3.zero && !IsKicking)
             {
                 gameObject.transform.forward = move;
+                //PlayFootStepsSound();
             }
         }
 
@@ -145,6 +160,8 @@ namespace Model
                 Animator.SetBool(IDLE_ANIMATION, false);
                 AudioSource.clip = JumpClip;
                 AudioSource.PlayOneShot(AudioSource.clip);
+                // AudioSource.clip = (FoosStepsSoundClips[2]);
+                //  AudioSource.PlayDelayed(0.5f);
                 Debug.Log("JUMP TRIGGERED SQUR" + playerVelocity.y);
             }
 
@@ -155,31 +172,59 @@ namespace Model
             Debug.Log("JumpVelocity:" + jumpSpeed);
         }
 
-        private void isFalling()
+        private void Push()
         {
-            if (!playerIsFalling) return;
-            Animator.SetFloat("FALLING_VELOCITY", playerVelocity.y);
-            if (groundedPlayer || playerVelocity.y <= -36)
+            if (playerControls.Player.Push.triggered && groundedPlayer && CanPlay)
             {
-                Debug.Log("stop falling");
-
-                Animator.SetBool(FREE_FALL_ANIMATION, false);
-                playerIsFalling = false;
-                IsAlive = false;
-                var camer = GetComponent<CameraWork>();
-                camer.distance = 4f;
-            }
-            else
-            {
-                Debug.Log("Player is falling");
-
-                Animator.SetBool(FREE_FALL_ANIMATION, true);
+                IsKicking = true;
+                Debug.Log("Kick");
+                Animator.SetTrigger(KICK_ANIMATION);
             }
         }
- 
+
+        private void Kick()
+        {
+            if (playerControls.Player.Push.triggered && groundedPlayer && CanPlay)
+            {
+                Debug.Log("JUMP TRIGGERED" + playerVelocity.y);
+                playerVelocity.y += Mathf.Sqrt(jumpHeight * -3.0f * gravityValue); //4.305915
+                Animator.SetTrigger(JUMP_ANIMATION);
+            }
+
+
+            controller.Move(playerVelocity * Time.deltaTime);
+            Debug.Log("JumpVelocity:" + jumpSpeed);
+        }
+
+        private void Falling()
+        {
+            if (!playerIsFalling) return;
+            Debug.Log("Player is falling");
+            Debug.Log("Animation check :" + Animator.GetBool(FREE_FALL_ANIMATION));
+
+            //if animation not triggered 
+            if (!Animator.GetBool(FREE_FALL_ANIMATION))
+            {
+                SetFallingTriggerAndVelocity();
+                Debug.Log("Animation after setTrigger :" + Animator.GetBool(FREE_FALL_ANIMATION));
+            }
+
+            IsAlive = false;
+            //syncing falling speed
+            Animator.SetFloat("FALLING_VELOCITY", playerVelocity.y);
+
+            Debug.Log("Velocity falling  " + playerVelocity.y);
+        }
+
+        private void SetFallingTriggerAndVelocity()
+        {
+            Animator.SetFloat("FALLING_VELOCITY", playerVelocity.y);
+            Animator.SetTrigger(FREE_FALL_ANIMATION);
+        }
+
         public override void Die()
         {
-            Debug.Log("DIE PLAYER"); 
+            Debug.Log("DIE PLAYER");
             base.Die();
             if (!photonView.IsMine) return;
             PlayBloodEffect();
@@ -212,7 +257,7 @@ namespace Model
         public override void Win()
         {
             base.Win();
- 
+
             if (!photonView.IsMine) return;
 
             if (IsAlive)
@@ -233,32 +278,73 @@ namespace Model
         }
 
         private void OnEnable()
-
         {
             playerControls.Enable();
         }
+//*********************************************************   COLLISION MANAGEMENT*************************************************
 
 
         private void OnCollisionEnter(Collision other)
         {
+            if (playerIsFalling) return;
+
             if (!other.gameObject.CompareTag("BreakableGlass")) return;
-            Debug.Log("COLLID WITH MIRROR " + other.gameObject.name);
-            var window = other.gameObject.GetComponent<Breakable>();
-            if (!window.BreakOnCollision) return;
+            Debug.Log("Collision with a Square Glass with name :[ " + other.gameObject.name + "]");
+            var square = other.gameObject.GetComponent<Breakable>();
+            if (!square.BreakOnCollision) return;
+            Debug.Log(
+                "Collision with a breakable on collision Square Glass with name :[ " + other.gameObject.name + "]");
+
+            SetFallingTriggerAndVelocity();
+            playerIsFalling = true;
         }
 
         private void OnTriggerEnter(Collider other)
         {
-            Debug.Log("COLLID WITH Black " + other.gameObject.name);
-
+            if (playerIsFalling) return;
             if (!other.gameObject.CompareTag("Black")) return;
-            playerIsFalling = true;
-            collisionCounter++;
-            // Animator.SetBool(FREE_FALL_ANIMATION, true);
 
-            // gameObject.GetComponent<CapsuleCollider>().isTrigger = true;
-            Debug.Log("isFallingFlag " + playerIsFalling);
-            Debug.Log("isFallingFlag  col counter " + collisionCounter);
+            Debug.Log("Collision Trigger empty enter");
+            SetFallingTriggerAndVelocity();
+
+            playerIsFalling = true;
+        }
+
+
+        private void OnTriggerExit(Collider other)
+        {
+            if (!playerIsFalling) return;
+            Debug.Log("Exiting Collision");
+            var objectTag = other.gameObject;
+            if (!objectTag.CompareTag("Black")) return;
+            Debug.Log("Exiting Collision with a air  with name :[ " + other.gameObject.name + "]");
+            Animator.ResetTrigger(FREE_FALL_ANIMATION);
+            Animator.SetTrigger("IMPACT");
+            AudioSource.clip = ImpactBodyClip;
+            AudioSource.PlayOneShot(AudioSource.clip);
+            playerIsFalling = false;
+            CallLoseMenu();
+            Debug.Log("Collision with Black Box with name :[ " + other.gameObject.name + "]");
+            Debug.Log("PlayerIsFalling Flag in Trigger :" + playerIsFalling);
+            Debug.Log("Animation trigger FREE_FALL_ANIMATION  in Trigger :" + Animator.GetBool(FREE_FALL_ANIMATION));
+        }
+
+        ////////////////////////////////////////// AUDIO SOUNDS /////////////////////////////////////////////
+
+        //Manage FootSTeps audio 
+
+        void PlayFootStepsSound()
+        {
+            if (PlaySound)
+            {
+                if (FoosStepsSoundClips.Length > 0)
+                {
+                    soundNumber = Random.Range(0, FoosStepsSoundClips.Length);
+
+                    AudioSource.clip = FoosStepsSoundClips[soundNumber];
+                    AudioSource.Play();
+                }
+            }
         }
     }
 }

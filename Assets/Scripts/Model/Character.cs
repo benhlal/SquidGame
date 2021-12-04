@@ -15,9 +15,11 @@ namespace Model
         protected const string IDLE_ANIMATION = "ISIDLE";
         protected const string RUN_ANIMATION = "RUN";
         protected const string JUMP_ANIMATION = "JUMP";
+        protected const string KICK_ANIMATION = "KICK";
         protected const string STUMPLE_ANIMATION = "STUMPLE";
         protected const string WINNER_ANIMATION = "ISWINNER";
-        protected const string FREE_FALL_ANIMATION = "FALLING";
+        protected const string FREE_FALL_ANIMATION = "FALL";
+        protected const string JUMP_FALL_ANIMATION = "JUMPFALL";
         protected const string SPEED = "SPEED";
 
 
@@ -26,6 +28,8 @@ namespace Model
         public bool IsAlive { get; set; }
 
         public bool IsWinner { get; set; }
+        public bool IsKicking { get; set; }
+        public bool playerIsFalling { get; set; }
         public bool CanJump { get; set; }
         public bool Stumple { get; set; }
 
@@ -37,6 +41,7 @@ namespace Model
         [SerializeField] protected AudioClip SprintClip;
         private bool jumpIsCause = false;
         private bool runIsCause = false;
+        private bool kickIsCause = false;
         protected float motionSpeed;
         protected float jumpSpeed;
 
@@ -55,6 +60,8 @@ namespace Model
         {
             CanPlay = true;
             IsAlive = true;
+            IsKicking = false;
+            playerIsFalling = false;
         }
 
 
@@ -111,7 +118,15 @@ namespace Model
         {
             IsAlive = false;
             motionSpeed = 0f;
-            Animator.SetTrigger(jumpIsCause ? DEATH_ANIMATION_FLYING : DEATH_ANIMATION);
+            if (jumpIsCause)
+            {
+                Animator.SetTrigger(DEATH_ANIMATION_FLYING);
+            }
+            else
+            {
+                Animator.SetTrigger(DEATH_ANIMATION);
+            }
+
             Animator.ResetTrigger(JUMP_ANIMATION);
         }
 
@@ -142,7 +157,12 @@ namespace Model
                 runIsCause = true;
             }
 
-            return jumpIsCause || runIsCause;
+            if (Animator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "Kicking")
+            {
+                kickIsCause = true;
+            }
+
+            return jumpIsCause || runIsCause || kickIsCause;
         }
     }
 }

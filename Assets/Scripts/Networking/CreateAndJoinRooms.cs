@@ -30,6 +30,7 @@ namespace Networking
 
         private void Start()
         {
+            createInput.text = "test";
             sexe_Toggle.isOn = true;
             sexe_Toggle.onValueChanged.AddListener(delegate { ToggleValueChanged(sexe_Toggle); });
             roomSizeInput.text = 1.ToString();
@@ -37,7 +38,7 @@ namespace Networking
 
         public void CreateRoom()
         {
-            var roomName = createInput.text;
+            var roomName = createInput.text ;
             SetPlayerGendre();
             GameManager.CreateRoomWithOptions(roomName, RoomOptions());
         }

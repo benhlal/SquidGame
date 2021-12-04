@@ -22,6 +22,14 @@
                     "interactions": ""
                 },
                 {
+                    "name": "Push",
+                    "type": "Button",
+                    "id": "f4279b7c-02f7-4819-88ab-a6e60dd71051",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
                     "name": "Look",
                     "type": "Value",
                     "id": "ea3010d5-91d7-46ae-b392-c6d795f997fd",
@@ -127,6 +135,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0403d59e-e7a7-4775-bf15-e949da7639c5",
+                    "path": "<Keyboard>/p",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Push",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a0434a6d-c6ca-41f4-8afd-4e6a6b47dfb8",
+                    "path": "<Gamepad>/buttonNorth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Push",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

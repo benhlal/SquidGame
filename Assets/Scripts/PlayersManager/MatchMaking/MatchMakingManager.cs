@@ -12,6 +12,7 @@ namespace PlayersManager.MatchMaking
     {
         //*****************************************************************  EVENTS *******************************************************************************
         private const float FLT_EPSILON = 0.01f;
+      //  private const string GAME_SCENE = "SquidTheGame";
         private const string GAME_SCENE = "Bridge";
         private PhotonView localPhotonView;
         private int playerCount;
